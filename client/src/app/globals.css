@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.leaflet-popup-content-wrapper {
+  background-color: #5a0c0c; /* Light khaki background */
+}
+.leaflet-popup-tip-container {
+  display: none; /* Optional: hides the popup tip arrow */
+}
+.leaflet-popup-content {
+  max-width: 280px; /* Adjust the max-width as needed */
+  max-height: 300px; /* Adjust the max-height as needed */
+}
+
+@media (max-width: 640px) {
+  /* For small screens and up (sm) */
+  .leaflet-popup-content {
+    max-width: 230px; /* Adjusted max-width */
+    max-height: 260px; /* Adjusted max-height */
+  }
+}
+
+@media (min-width: 640) {
+  /* Example breakpoint for medium screens */
+  .map-container {
+    height: 240px; /* Adjust height for medium screens */
+  }
+}
+
+.map-container {
+  z-index: 10;
+  position: relative; /* Ensure the map respects the z-index */
+}
