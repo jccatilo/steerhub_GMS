@@ -8,4 +8,4 @@ class User(Base):
     institution_name = Column(String(255))
     username = Column(String(255), unique=True, index=True)
     email = Column(String(255), unique=True, index=True)
-    password = Column(String(255))
+    password = Column(String(255))  # This should store the hashed password
