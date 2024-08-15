@@ -8,3 +8,5 @@ uploads
 
 /server/.env
 server/env
+
+/api/gms_configs.env
