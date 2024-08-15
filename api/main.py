@@ -7,6 +7,7 @@ from database import SessionLocal, engine, Base
 from passlib.context import CryptContext
 from dotenv import load_dotenv
 import os
+from typing import Union
 
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
@@ -123,7 +124,7 @@ def authenticate_user(db: Session, email: str, password: str):
     return user
 
 # Utility function to create a JWT token
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
+def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
