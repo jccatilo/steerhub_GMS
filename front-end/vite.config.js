@@ -14,9 +14,9 @@ export default {
   build: {
     rollupOptions: {
       input: {
-        main: path.resolve(__dirname, 'src/pages/index.html'),
-        page1: path.resolve(__dirname, 'src/pages/page1.html'),
-        page2: path.resolve(__dirname, 'src/pages/page2.html'),
+        main: path.resolve(__dirname, 'src/index.html'),
+        user: path.resolve(__dirname, 'src/pages/user/index.html'),
+        center: path.resolve(__dirname, 'src/pages/center/index.html'),
       },
     },
   },
