@@ -3,13 +3,38 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap w/ Vite</title>
+    <title>Login Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./scss/styles.scss">
   </head>
   <body>
-    <div class="container py-4 px-3 mx-auto">
-      <h1>Hello, Bootstrap and Vite!</h1>
-      <button class="btn btn-primary">Primary button</button>
+    <div class="container">
+      <div class="row align-items-center justify-content-center">
+        <div class="col-md-6 logo-container text-center">
+          <img src="./assets/img/logo.png" alt="Logo" class="logo">
+        </div>
+        <div class="col-md-6">
+          <div class="glass-card">
+            <h1>Login</h1>
+            <form id="loginForm">
+              <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required>
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Login</button>
+              <div class="form-text mt-3">
+                <a href="#">Forgot password?</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
+    
     <script type="module" src="./js/main.js"></script>
   </body>
 </html>

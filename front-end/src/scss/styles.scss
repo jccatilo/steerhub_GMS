@@ -1,2 +1,93 @@
 // Import all of Bootstrap's CSS
 @import "~bootstrap/scss/bootstrap";
+
+body {
+    background: url('./assets/img/bg.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+  }
+  
+  .container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .row {
+    width: 100%;
+  }
+  
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .logo {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    backdrop-filter: blur(50px);
+    box-shadow: 0 4px 30px rgba(122, 1, 1, 0.63);
+    padding: 2rem;
+    width: 100%;
+  }
+  
+  .glass-card h1 {
+    font-size: 1.5rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .glass-card .form-control {
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    color: #333;
+    margin-bottom: 1rem;
+    padding: 1rem;
+
+  }
+  
+  .glass-card .btn-primary {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #b40000;
+    border: none;
+  }
+  
+  .glass-card .btn-primary:hover {
+    background-color: #4a4a4a;
+  }
+  
+  .glass-card .form-text {
+    color: #6c757d;
+    text-align: center;
+  }
+  
+  /* Responsive adjustments */
+@media (max-width: 768px) {
+    .row {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .logo-container {
+      margin-bottom: 1rem;
+    }
+
+    .logo {
+        width: 150px; /* Adjust the width for smaller logo on mobile */
+        height: auto;
+      }
+  
+    .glass-card {
+      padding: 1rem; /* Reduced padding on mobile */
+      max-width: 90%;
+    }
+  }
