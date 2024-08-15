@@ -34,10 +34,13 @@ conf = ConnectionConfig(
 
 # Dependency to get the database session
 def get_db():
+    print("get_db()")
     db = SessionLocal()
     try:
+        print("yield db")
         yield db
     finally:
+        print("db.close()")
         db.close()
 
 # CREATE a new user and send an email
