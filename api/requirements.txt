@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+sqlalchemy==1.4.53
+databases==0.8.0
+pydantic
+pymysql
