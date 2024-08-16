@@ -17,6 +17,7 @@ export default {
         main: path.resolve(__dirname, 'src/index.html'),
         user: path.resolve(__dirname, 'src/pages/user/index.html'),
         center: path.resolve(__dirname, 'src/pages/center/index.html'),
+        register: path.resolve(__dirname, 'src/pages/register/index.html'),
       },
     },
   },

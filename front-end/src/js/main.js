@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       // Send request to the API
-      const response = await fetch('http://atlas.batstate-u.edu.ph:8081/login', {
+      const response = await fetch('http://localhost:8000/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('isAuthenticated', true); // Or store an auth flag
 
         // Redirect to the user dashboard
-        window.location.href = 'pages/user/index.html'; // Example redirect
+        window.location.href = './pages/user/index.html'; // Example redirect
 
         console.log("Login successful");
       } else {

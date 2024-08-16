@@ -6,15 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check if the user is authenticated
     const isAuthenticated = localStorage.getItem('isAuthenticated');
     const authToken = localStorage.getItem('authToken');
-
-    // if (!isAuthenticated || !authToken) {
-    //     // If not authenticated, redirect to the login page
-    //     window.location.href = '../';
-    //     return;
-    // }
+    // const username = localStorage.getItem('authToken');
+    const username = "awww"
 
 
-  const username = 'John Doe'; // Replace with the actual username
+    if (!isAuthenticated || !authToken) {
+        // If not authenticated, redirect to the login page
+        window.location.href = '../';
+        return;
+    }
+
+
+  // const username = 'John Doe'; // Replace with the actual username
   document.getElementById('username').innerText = username;
 
   const endpoints = {
