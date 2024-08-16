@@ -88,8 +88,8 @@ async def create_user(user: UserCreate, background_tasks: BackgroundTasks, db: S
         print(f"Failed to send email: {e}")
         raise HTTPException(status_code=500, detail="User created, but email could not be sent.")
     
-    # return db_user
-    return {"msg": "user_create success"}
+    return db_user
+    # return {"msg": "user_create success"}
 
 
 # Initialize the password context for hashing
