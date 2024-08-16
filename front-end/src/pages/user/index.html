@@ -3,13 +3,52 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap w/ Vite</title>
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./scss/styles.scss">
   </head>
   <body>
-    <div class="container py-4 px-3 mx-auto">
-      <h1>User Page</h1>
-      <button class="btn btn-primary">Primary button</button>
+    <div class="container my-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Welcome, <span id="username">User</span>!</h1>
+
+        <!-- Hamburger Menu Button -->
+        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container-fluid">
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" href="#" id="approved-link">Approved Requests</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" id="pending-link">Pending Requests</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" id="rejected-link">Rejected Requests</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" id="past-link">Past Visits</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <div id="content">
+        <!-- Dynamic content will be loaded here -->
+        <h3>Approved Requests</h3>
+        <ul id="approved-requests" class="list-group">
+          <!-- List items will be dynamically inserted here -->
+        </ul>
+      </div>
     </div>
+    
     <script type="module" src="./main.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
   </body>
 </html>
