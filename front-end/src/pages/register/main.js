@@ -37,10 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const result = await response.json();
 
+            console.log(response.status)
+
             if (response.status == 200) {
+
+                console.log("signup successful")
 
                 // Show the toast notification
                 const toastElement = document.getElementById('signupToast');
+                // console.log(toastElement)
                 const toast = new bootstrap.Toast(toastElement);
                 toast.show();
 
@@ -51,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 // Handle signup failure
                 alert('Signup failed: ' + result.message);
+
             }
         } catch (error) {
             console.error('Error during signup:', error);
