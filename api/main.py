@@ -11,8 +11,16 @@ from typing import Union
 
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
-
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
 
 load_dotenv(dotenv_path="gms_configs.env")
 MAIL_USERNAME = os.getenv("MAIL_USERNAME")
