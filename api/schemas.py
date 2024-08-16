@@ -1,4 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing import Optional
+from datetime import datetime
 
 class UserBase(BaseModel):
     institution_name: str
@@ -27,3 +29,21 @@ class UserLogin(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class VisitRequest(BaseModel):
+    research_center: str
+    visit_type: str  # "single" or "group"
+    visit_date: datetime
+    duration: Optional[int] = None
+    purpose: str
+
+    # class Config:
+    #     schema_extra = {
+    #         "example": {
+    #             "research_center": "Center for AI Research",
+    #             "visit_type": "group",
+    #             "visit_date": "2024-08-16T09:00:00",
+    #             "duration": 120,  # Duration in minutes or hours
+    #             "purpose": "Discussing potential collaborations"
+    #         }
+    #     }

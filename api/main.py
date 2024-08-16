@@ -1,8 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from sqlalchemy.orm import Session
-from models import User as UserModel  # SQLAlchemy model
-from schemas import UserCreate, User as UserSchema, UserUpdatePassword, UserLogin, Token  # Pydantic schemas
+from models import VisitRequestModel, User as UserModel  # SQLAlchemy model
+from schemas import UserCreate, User as UserSchema, UserUpdatePassword, UserLogin, Token, VisitRequest  # Pydantic schemas
 from database import SessionLocal, engine, Base
 from passlib.context import CryptContext
 from dotenv import load_dotenv
@@ -171,3 +171,25 @@ def delete_user(email: str, db: Session = Depends(get_db)):
     db.commit()
     
     return {"msg": f"User with email {email} has been deleted successfully"}
+
+@app.post("/request-visit/")
+def request_visit(visit: VisitRequest, db: Session = Depends(get_db)):
+    # Create a new visit request record
+    visit_request = VisitRequestModel(
+        research_center=visit.research_center,
+        visit_type=visit.visit_type,
+        visit_date=visit.visit_date,
+        duration=visit.duration,  # This will be None if not provided
+        purpose=visit.purpose
+    )
+    
+    # Save the visit request to the database
+    db.add(visit_request)
+    db.commit()
+    db.refresh(visit_request)
+    
+    return {"msg": "Visit request submitted successfully", "visit_id": visit_request.id}
+
+
+# Create the database tables
+Base.metadata.create_all(bind=engine)
