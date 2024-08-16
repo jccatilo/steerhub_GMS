@@ -194,4 +194,5 @@ def request_visit(visit: VisitRequest, db: Session = Depends(get_db)):
 
 
 # Create the database tables
+Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
