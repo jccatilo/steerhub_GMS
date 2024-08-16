@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Send request to the API
-            const response = await fetch('http://atlas.batstate-u.edu.ph:8081/users', {  // Replace with your API endpoint
+            const response = await fetch('http://localhost:8000/users', {  // Replace with your API endpoint
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
