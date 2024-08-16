@@ -29,6 +29,7 @@ class UserLogin(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    username: str  # Add username to the response
 
 class VisitRequest(BaseModel):
     research_center: str

@@ -10,3 +10,5 @@ uploads
 server/env
 
 /api/gms_configs.env
+
+/api/__pycache__

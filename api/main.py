@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
+from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks, status
+
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from sqlalchemy.orm import Session
 from models import VisitRequestModel, User as UserModel  # SQLAlchemy model
@@ -152,11 +153,15 @@ def login_for_access_token(user_login: UserLogin, db: Session = Depends(get_db))
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    
+    # Create the access token
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    
+    # Return the token along with the username
+    return {"access_token": access_token, "token_type": "bearer", "username": user.username}
 
 
 # Delete a user by email
@@ -194,5 +199,5 @@ def request_visit(visit: VisitRequest, db: Session = Depends(get_db)):
 
 
 # Create the database tables
-Base.metadata.drop_all(bind=engine)
+# Base.metadata.drop_all(bind=engine) #if need to drop only
 Base.metadata.create_all(bind=engine)
