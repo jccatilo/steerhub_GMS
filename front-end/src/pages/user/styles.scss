@@ -1,2 +1,54 @@
 // Import all of Bootstrap's CSS
 @import "~bootstrap/scss/bootstrap";
+
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+.header {
+  text-align: center;
+}
+
+.navbar .nav-link.active {
+  font-weight: bold;
+  color: #007bff !important;
+}
+
+.list-group-item {
+  border: 1px solid #ddd;
+  padding: 10px 15px;
+  margin-bottom: 5px;
+}
+
+.navbar-toggler {
+  border: none; /* Remove the default border */
+}
+
+.navbar-toggler-icon {
+  background-image: none; /* Remove the default icon */
+  position: relative;
+  width: 30px;
+  height: 2px;
+  background-color: red; /* Set the bar color */
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background-color: red; /* Set the bar color */
+    transition: all 0.3s;
+  }
+
+  &::before {
+    top: -8px; /* Position the top bar */
+  }
+
+  &::after {
+    top: 8px; /* Position the bottom bar */
+  }
+}
+
+  
