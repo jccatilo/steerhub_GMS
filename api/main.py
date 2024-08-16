@@ -174,13 +174,15 @@ def delete_user(email: str, db: Session = Depends(get_db)):
 
 @app.post("/request-visit/")
 def request_visit(visit: VisitRequest, db: Session = Depends(get_db)):
-    # Create a new visit request record
+    # Create a new visit request record with the requestor field
     visit_request = VisitRequestModel(
         research_center=visit.research_center,
         visit_type=visit.visit_type,
         visit_date=visit.visit_date,
-        duration=visit.duration,  # This will be None if not provided
-        purpose=visit.purpose
+        duration=visit.duration,
+        purpose=visit.purpose,
+        status=visit.status,
+        requestor=visit.requestor  # Set the requestor field
     )
     
     # Save the visit request to the database
@@ -188,7 +190,7 @@ def request_visit(visit: VisitRequest, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(visit_request)
     
-    return {"msg": "Visit request submitted successfully", "visit_id": visit_request.id}
+    return {"msg": "Visit request submitted successfully", "visit_id": visit_request.id, "status": visit_request.status}
 
 
 # Create the database tables

@@ -32,10 +32,12 @@ class Token(BaseModel):
 
 class VisitRequest(BaseModel):
     research_center: str
-    visit_type: str  # "single" or "group"
+    visit_type: str
     visit_date: datetime
     duration: Optional[int] = None
     purpose: str
+    requestor: str  # New requestor field
+    status: Optional[str] = "pending"  # Status is optional but defaults to "pending"
 
     # class Config:
     #     schema_extra = {

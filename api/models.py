@@ -14,8 +14,10 @@ class VisitRequestModel(Base):
     __tablename__ = "visit_requests"
 
     id = Column(Integer, primary_key=True, index=True)
-    research_center = Column(String(255), index=True)  # Specify length for VARCHAR
-    visit_type = Column(String(50))  # Specify length
+    research_center = Column(String(255), index=True)
+    visit_type = Column(String(50))
     visit_date = Column(DateTime)
-    duration = Column(Integer, nullable=True)  # Duration is now optional and nullable
-    purpose = Column(String(255))  # Specify length for purpose
+    duration = Column(Integer, nullable=True)
+    purpose = Column(String(255))
+    status = Column(String(50), default="pending")
+    requestor = Column(String(255))  # Add the requestor column
