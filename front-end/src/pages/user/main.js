@@ -58,7 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
         tr.innerHTML = `
           <td>${item.name}</td>
           <td>${item.price}</td>
-          <td><img src="${item.image}" alt="${item.name}"></td>
+          <td>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="${item.image}" data-bs-name="${item.name}">
+              View Image
+            </button>
+          </td>
         `;
         tbody.appendChild(tr);
       });
@@ -87,4 +91,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Load default view (Approved Requests)
   loadRequests('approved');
+
+
+   // Handle the modal display
+   const imageModal = document.getElementById('imageModal');
+   imageModal.addEventListener('show.bs.modal', (event) => {
+     const button = event.relatedTarget;
+     const imageUrl = button.getAttribute('data-bs-image');
+     const imageName = button.getAttribute('data-bs-name');
+     
+     const modalTitle = imageModal.querySelector('.modal-title');
+     const modalImage = imageModal.querySelector('.modal-body img');
+     
+     modalTitle.textContent = imageName;
+     modalImage.src = imageUrl;
+   });
+
+    // Handle appointment form submission
+    const appointmentForm = document.getElementById('appointmentForm');
+    appointmentForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        
+        // const name = username;
+        // const date = document.getElementById('appointment-date').value;
+        // const time = document.getElementById('appointment-time').value;
+        // const groupType = document.querySelector('input[name="groupType"]:checked').value;
+        // const purpose = document.getElementById('appointment-purpose').value;
+
+        const appointmentData = {
+          username,
+          name: username,
+          date: document.getElementById('appointmentDate').value,
+          groupStatus: document.getElementById('groupCheck').checked,
+          purpose: document.getElementById('purpose').value,
+          researchCenter: document.getElementById('researchCenter').value
+      };
+
+        try {
+            const response = await fetch('https://api.example.com/appointments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify(appointmentData)
+            });
+
+            if (response.ok) {
+                alert('Appointment successfully created!');
+                // Optionally close the modal
+                const modalElement = document.getElementById('appointmentModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                modalInstance.hide();
+            } else {
+                throw new Error('Failed to create appointment');
+            }
+        } catch (error) {
+            console.error('Error creating appointment:', error);
+            alert('Failed to create appointment. Please try again.');
+        }
+    });
+
 });

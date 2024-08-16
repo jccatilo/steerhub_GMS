@@ -2,7 +2,7 @@
 @import "~bootstrap/scss/bootstrap";
 
 body {
-    background: url('./assets/img/bg.jpg') no-repeat center center fixed;
+    background: url('/assets/img/bg.jpg') no-repeat center center fixed;
     background-size: cover;
     font-family: Arial, sans-serif;
   }
@@ -79,11 +79,10 @@ body {
   
     .logo-container {
       margin-bottom: 1rem;
-      padding-top: 200px;
     }
 
     .logo {
-        width: 25px; /* Adjust the width for smaller logo on mobile */
+        width: 150px; /* Adjust the width for smaller logo on mobile */
         height: auto;
       }
   
