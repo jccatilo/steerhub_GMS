@@ -33,17 +33,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const result = await response.json();
 
+      console.log(result)
+
       // Handle the result here
-      if (result.success) {
+      if (result !== null) {
         // Store the token or a flag in localStorage or sessionStorage
-        localStorage.setItem('authToken', result.token); // Store the token
+        localStorage.setItem('authToken', result.access_token); // Store the token
         localStorage.setItem('isAuthenticated', true); // Or store an auth flag
 
         // Redirect to the user dashboard
-        window.location.href = 'pages/user'; // Example redirect
+        window.location.href = 'pages/user/index.html'; // Example redirect
+
+        console.log("Login successful");
       } else {
         // Show error message
-        alert('Login failed: ' + result.message);
+        alert('Login failed');
       }
     } catch (error) {
       console.error('Error during login:', error);

@@ -20,4 +20,5 @@ export default {
       },
     },
   },
+  publicDir: path.resolve(__dirname, 'public')  // Set the public directory
 }

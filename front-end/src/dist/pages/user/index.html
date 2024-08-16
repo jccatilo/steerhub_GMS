@@ -3,14 +3,130 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap w/ Vite</title>
-    <script type="module" crossorigin src="/assets/alert-_nCnJDVB.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/main-9kx3olKa.css">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./scss/styles.scss">
+    <script type="module" crossorigin src="/assets/user-Cre0UdY7.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/bootstrap.esm-CPz0pknf.js">
+    <link rel="stylesheet" crossorigin href="/assets/user-DyzcTPtF.css">
   </head>
   <body>
-    <div class="container py-4 px-3 mx-auto">
-      <h1>User Page</h1>
-      <button class="btn btn-primary">Primary button</button>
-    </div>
+    <div class="container my-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Welcome, <span id="username">User</span>!</h1>
+
+        <!-- Hamburger Menu Button -->
+        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+        <div class="container-fluid">
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" href="#" id="approved-link">Approved Requests</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" id="pending-link">Pending Requests</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" id="rejected-link">Rejected Requests</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" id="past-link">Past Visits</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <div id="content">
+        <!-- Dynamic content will be loaded here -->
+        <h3>Approved Requests</h3>
+        <ul id="approved-requests" class="list-group">
+          <!-- List items will be dynamically inserted here -->
+        </ul>
+      </div>
+    </div>
+
+
+    <div class="container">
+      <!-- Existing content -->
+      <div class="row align-items-center justify-content-center">
+        <!-- Your dashboard content here -->
+      </div>
+    
+      <!-- Floating Button -->
+      <button type="button" class="btn btn-primary btn-floating" data-bs-toggle="modal" data-bs-target="#appointmentModal">
+        +
+      </button>
+    
+     <!-- Appointment Modal -->
+     <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="appointmentModalLabel">Make an Appointment</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="appointmentForm">
+              <div class="mb-3">
+                <label for="appointmentDate" class="form-label">Date and Time</label>
+                <input type="datetime-local" class="form-control" id="appointmentDate" required>
+              </div>
+              <div class="mb-3">
+                <label for="researchCenter" class="form-label">Research Center</label>
+                <select class="form-select" id="researchCenter" required>
+                  <option value="Likha Fablab">Likha Fablab</option>
+                  <option value="Material Testing and Calibration Center">Material Testing and Calibration Center</option>
+                  <option value="GIS Development Center">GIS Development Center</option>
+                  <option value="Electronics Systems Research Center">Electronics Systems Research Center</option>
+                  <option value="Center for Technopreneurship and Innovation">Center for Technopreneurship and Innovation</option>
+                  <option value="Digital Transformation Center">Digital Transformation Center</option>
+                  <option value="Office of the Director of STEER Hub">Office of the Director of STEER Hub</option>
+                  <option value="Center for Innovation in Engineering Education">Center for Innovation in Engineering Education</option>
+                  <option value="KIST Park Office">KIST Park Office</option>
+                </select>
+              </div>
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="groupCheck">
+                <label class="form-check-label" for="groupCheck">Group Appointment</label>
+              </div>
+              <div class="mb-3">
+                <label for="purpose" class="form-label">Purpose</label>
+                <textarea class="form-control" id="purpose" rows="3" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    </div>
+    
+
+
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="imageModalLabel">Sample Image</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <img src="" alt="Sample Image" class="img-fluid">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
   </body>
 </html>

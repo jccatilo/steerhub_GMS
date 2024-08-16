@@ -47,6 +47,82 @@
         </ul>
       </div>
     </div>
+
+
+    <div class="container">
+      <!-- Existing content -->
+      <div class="row align-items-center justify-content-center">
+        <!-- Your dashboard content here -->
+      </div>
+    
+      <!-- Floating Button -->
+      <button type="button" class="btn btn-primary btn-floating" data-bs-toggle="modal" data-bs-target="#appointmentModal">
+        +
+      </button>
+    
+     <!-- Appointment Modal -->
+     <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="appointmentModalLabel">Make an Appointment</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="appointmentForm">
+              <div class="mb-3">
+                <label for="appointmentDate" class="form-label">Date and Time</label>
+                <input type="datetime-local" class="form-control" id="appointmentDate" required>
+              </div>
+              <div class="mb-3">
+                <label for="researchCenter" class="form-label">Research Center</label>
+                <select class="form-select" id="researchCenter" required>
+                  <option value="Likha Fablab">Likha Fablab</option>
+                  <option value="Material Testing and Calibration Center">Material Testing and Calibration Center</option>
+                  <option value="GIS Development Center">GIS Development Center</option>
+                  <option value="Electronics Systems Research Center">Electronics Systems Research Center</option>
+                  <option value="Center for Technopreneurship and Innovation">Center for Technopreneurship and Innovation</option>
+                  <option value="Digital Transformation Center">Digital Transformation Center</option>
+                  <option value="Office of the Director of STEER Hub">Office of the Director of STEER Hub</option>
+                  <option value="Center for Innovation in Engineering Education">Center for Innovation in Engineering Education</option>
+                  <option value="KIST Park Office">KIST Park Office</option>
+                </select>
+              </div>
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="groupCheck">
+                <label class="form-check-label" for="groupCheck">Group Appointment</label>
+              </div>
+              <div class="mb-3">
+                <label for="purpose" class="form-label">Purpose</label>
+                <textarea class="form-control" id="purpose" rows="3" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    </div>
+    
+
+
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="imageModalLabel">Sample Image</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <img src="" alt="Sample Image" class="img-fluid">
+          </div>
+        </div>
+      </div>
+    </div>
+    
     
     <script type="module" src="./main.js"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
