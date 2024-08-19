@@ -2,13 +2,13 @@ from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks, status
 
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from sqlalchemy.orm import Session
-from models import VisitRequestModel, User as UserModel  # SQLAlchemy model
-from schemas import UserCreate, User as UserSchema, UserUpdatePassword, UserLogin, Token, VisitRequest  # Pydantic schemas
+from models import VisitRequestModel, ResearchCenterModel, User as UserModel  # SQLAlchemy model
+from schemas import UpdateRequestStatus,UserCreate,VisitRequestResponse,ResearchCenterSignUp, ResearchCenterLogin, ResearchCenterToken,User as UserSchema, UserUpdatePassword, UserLogin, Token, VisitRequest  # Pydantic schemas
 from database import SessionLocal, engine, Base
 from passlib.context import CryptContext
 from dotenv import load_dotenv
 import os
-from typing import Union
+from typing import Union,List
 
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
@@ -66,7 +66,8 @@ async def create_user(user: UserCreate, background_tasks: BackgroundTasks, db: S
         institution_name=user.institution_name,
         username=user.username,
         email=user.email,
-        password=hashed_password  # Store the hashed password
+        password=hashed_password,  # Store the hashed password
+        position=user.position  # Include the optional position field
     )
     db.add(db_user)
     db.commit()
@@ -179,26 +180,195 @@ def delete_user(email: str, db: Session = Depends(get_db)):
     return {"msg": f"User with email {email} has been deleted successfully"}
 
 @app.post("/request-visit/")
-def request_visit(visit: VisitRequest, db: Session = Depends(get_db)):
-    # Create a new visit request record with the requestor field
-    visit_request = VisitRequestModel(
+def request_visit(background_tasks: BackgroundTasks,visit: VisitRequest, db: Session = Depends(get_db), ):
+  # Create a new visit request record
+    new_request = VisitRequestModel(
         research_center=visit.research_center,
         visit_type=visit.visit_type,
         visit_date=visit.visit_date,
         duration=visit.duration,
         purpose=visit.purpose,
-        status=visit.status,
-        requestor=visit.requestor  # Set the requestor field
+        status="pending",
+        requestor=visit.requestor
     )
-    
-    # Save the visit request to the database
-    db.add(visit_request)
-    db.commit()
-    db.refresh(visit_request)
-    
-    return {"msg": "Visit request submitted successfully", "visit_id": visit_request.id, "status": visit_request.status}
 
+    # Generate and assign a unique request_id
+    new_request.request_id = new_request.generate_request_id()
+
+    # Ensure the generated request_id is unique
+    while db.query(VisitRequestModel).filter(VisitRequestModel.request_id == new_request.request_id).first():
+        new_request.request_id = new_request.generate_request_id()
+
+    # Save the visit request to the database
+    db.add(new_request)
+    db.commit()
+    db.refresh(new_request)
+
+    # Prepare email message to the requestor
+    message = MessageSchema(
+        subject="Your Visit Request Has Been Submitted",
+        recipients=[new_request.requestor],  # Requestor's email
+        body=f"Hi! \nYour visit request has been successfully submitted.\n\n"
+             f"Your unique request ID is: {new_request.request_id}.\n"
+             f"Contact info of center to be visited: {new_request.research_center}\n"
+             f"Visit Type: {new_request.visit_type}\n"
+             f"Visit Date: {new_request.visit_date}\n"
+             f"Duration: {new_request.duration} hrs\n"
+             f"Purpose: {new_request.purpose}\n\n"
+             f"You can use this ID to follow up on the status of your request at the research center and log-in to your STEERHub GMS account at atlas.batstate-u.edu.ph:8081/pages/user-login to view the latest status.\n\n"
+             f"Thank you!"
+             f"\n\nBest regards,\nSTEERHub GMS Team",
+        subtype="plain"
+    )
+
+    # Send email in the background
+    background_tasks.add_task(FastMail(conf).send_message, message)
+
+    # Fetch the email of the research center from the database (if stored there)
+    research_center_email = db.query(ResearchCenterModel).filter(ResearchCenterModel.email == new_request.research_center).first()
+    
+    if not research_center_email:
+        raise HTTPException(status_code=404, detail="Research center not found")
+
+    # Prepare email notification to the research center
+    research_center_message = MessageSchema(
+        subject=f"New Visit Request Notification: {new_request.request_id}",
+        recipients=[research_center_email.email],  # Research center's email
+        body=f"A new visit request has been made.\n\n"
+        f"Request ID: {new_request.request_id}\n"
+            f"Requestor: {new_request.requestor}\n\n"
+             f"Visit Type: {new_request.visit_type}\n"
+             f"Visit Date: {new_request.visit_date}\n"
+             f"Duration: {new_request.duration} hrs\n"
+             f"Purpose: {new_request.purpose}\n\n"
+             f"Kindly login to our portal at http://atlas.batstate-u.edu.ph:8081/pages/research-center-login/ to review the request."
+             f"\n\nBest regards,\nSTEERHub GMS Team",
+        subtype="plain"
+    )
+
+    # Send email to the research center in the background
+    background_tasks.add_task(FastMail(conf).send_message, research_center_message)
+    
+    return {"msg": "Visit request submitted successfully", "visit_id": new_request.id, "request_id": new_request.request_id, "status": new_request.status}
+
+
+@app.post("/research-center/signup/", status_code=status.HTTP_201_CREATED)
+async def research_center_signup(background_tasks: BackgroundTasks, signup_data: ResearchCenterSignUp, db: Session = Depends(get_db)):
+    # Check if the email is already registered
+    db_center = db.query(ResearchCenterModel).filter(ResearchCenterModel.email == signup_data.email).first()
+    if db_center:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
+
+    # Hash the password before storing it
+    hashed_password = get_password_hash(signup_data.password)
+
+    # Create a new research center record
+    new_center = ResearchCenterModel(
+        email=signup_data.email,
+        password=hashed_password,  # Store the hashed password
+        max_guest_capacity=signup_data.max_guest_capacity
+    )
+
+    # Save the research center to the database
+    db.add(new_center)
+    db.commit()
+    db.refresh(new_center)
+
+    # Prepare email notification
+    message = MessageSchema(
+        subject="Welcome to the Research Center",
+        recipients=[signup_data.email],  # List of recipients
+        body=f"Hi Team!, \n\nYou've successfully signed up with email {signup_data.email} in the STEERHub Guest Management System!\nYou will receive guest/visitor requests via your registered email and will be able to do appropriate action with regards to the requests.\n\nBest regards,\nSTEERHub GMS Team.",
+        # body=f"Hello {user.username},\n\nThank you for registering at STEERHub Guest Management System!\n\nBest regards,\nSTEERHub GMS Team",
+        subtype="plain"
+    )
+
+    # Send email in the background
+    background_tasks.add_task(FastMail(conf).send_message, message)
+
+    return {"msg": "Research center signed up successfully", "center_id": new_center.id}
+
+
+@app.post("/research-center/login", response_model=ResearchCenterToken)
+async def research_center_login(login_data: ResearchCenterLogin, db: Session = Depends(get_db)):
+    # Authenticate the research center
+    research_center = db.query(ResearchCenterModel).filter(ResearchCenterModel.email == login_data.email).first()
+
+    if not research_center or not verify_password(login_data.password, research_center.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    # Create the access token
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": research_center.email, "center_id": research_center.id},
+        expires_delta=access_token_expires
+    )
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "center_id": research_center.id,
+        "email": research_center.email
+    }
+
+@app.get("/visit-requests/", response_model=List[VisitRequestResponse])
+async def get_visit_requests(email: str, status_type: str, db: Session = Depends(get_db)):
+    # Fetch the research center by email
+    research_center = db.query(ResearchCenterModel).filter(ResearchCenterModel.email == email).first()
+    
+    if not research_center:
+        raise HTTPException(status_code=404, detail="Research center not found")
+
+    # Fetch visit requests based on research center and status type
+    visit_requests = db.query(VisitRequestModel).filter(
+        VisitRequestModel.research_center == research_center.email,
+        VisitRequestModel.status == status_type
+    ).all()
+
+    if not visit_requests:
+        raise HTTPException(status_code=404, detail="No visit requests found with the given status")
+
+    return visit_requests
+
+@app.put("/update-request-status/", status_code=status.HTTP_200_OK)
+def update_request_status(background_tasks: BackgroundTasks,update_data: UpdateRequestStatus, db: Session = Depends(get_db)):
+# Fetch the visit request based on the provided request_id
+    visit_request = db.query(VisitRequestModel).filter(VisitRequestModel.request_id == update_data.request_id).first()
+
+    if not visit_request:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Visit request not found")
+
+    # Update the status and center_remarks if provided
+    if update_data.status is not None:
+        visit_request.status = update_data.status
+
+    if update_data.center_remarks is not None:
+        visit_request.center_remarks = update_data.center_remarks
+
+    # Commit the changes to the database
+    db.commit()
+
+    # Prepare the email to notify the requestor about the status update
+    requestor_message = MessageSchema(
+        subject="Your Visit Request Status Has Been Updated",
+        recipients=[visit_request.requestor],  # Send the email to the requestor
+        body=f"Hi!\n\nThe status of your visit request (ID: {visit_request.request_id}) has been updated to '{visit_request.status}'.\n\n"
+             f"Research Center Remarks: {visit_request.center_remarks}\n\n"
+             f"Please follow up if you have any further questions.\n\n"
+             f"Thank you!"
+             f"\n\nBest regards,\nSTEERHub GMS Team",
+        subtype="plain"
+    )
+
+    # Send the email in the background
+    background_tasks.add_task(FastMail(conf).send_message, requestor_message)
+
+    return {"msg": f"Request {update_data.request_id} status updated to {update_data.status}"}
 
 # Create the database tables
-# Base.metadata.drop_all(bind=engine) #if need to drop only
+Base.metadata.drop_all(bind=engine) #if need to drop only
 Base.metadata.create_all(bind=engine)
