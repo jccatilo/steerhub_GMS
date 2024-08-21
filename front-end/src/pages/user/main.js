@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </button>
           </td>
           <td>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="${item.image}" data-bs-name="${item.name}">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#are_you_sure_cancel_modal" data-bs-image="${item.image}" data-bs-name="${item.name}">
               X
             </button>
           </td>
