@@ -15,6 +15,10 @@ from datetime import datetime, timedelta
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
+
+
+origins=["*", "http://localhost:8080"]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allow all origins
@@ -163,7 +167,7 @@ def login_for_access_token(user_login: UserLogin, db: Session = Depends(get_db))
     )
     
     # Return the token along with the username
-    return {"access_token": access_token, "token_type": "bearer", "username": user.username}
+    return {"access_token": access_token, "token_type": "bearer", "username": user.username, "email": user.email}
 
 
 # Delete a user by email
@@ -318,14 +322,14 @@ async def research_center_login(login_data: ResearchCenterLogin, db: Session = D
 @app.get("/visit-requests/", response_model=List[VisitRequestResponse])
 async def get_visit_requests(email: str, status_type: str, db: Session = Depends(get_db)):
     # Fetch the research center by email
-    research_center = db.query(ResearchCenterModel).filter(ResearchCenterModel.email == email).first()
+    user = db.query(UserModel).filter(UserModel.email == email).first()
     
-    if not research_center:
-        raise HTTPException(status_code=404, detail="Research center not found")
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
 
     # Fetch visit requests based on research center and status type
     visit_requests = db.query(VisitRequestModel).filter(
-        VisitRequestModel.research_center == research_center.email,
+        VisitRequestModel.requestor == user.email,
         VisitRequestModel.status == status_type
     ).all()
 

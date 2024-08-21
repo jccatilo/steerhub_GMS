@@ -31,9 +31,7 @@
               <li class="nav-item">
                 <a class="nav-link" href="#" id="rejected-link">Rejected Requests</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#" id="past-link">Past Visits</a>
-              </li>
+              
             </ul>
           </div>
         </div>
@@ -75,17 +73,21 @@
                 <input type="datetime-local" class="form-control" id="appointmentDate" required>
               </div>
               <div class="mb-3">
+                <label for="visitDuration" class="form-label">Duration</label>
+                <input type="number" class="form-control" id="visitDuration" placeholder="Enter duration (hrs)" min="1" required>
+              </div>
+              <div class="mb-3">
                 <label for="researchCenter" class="form-label">Research Center</label>
                 <select class="form-select" id="researchCenter" required>
-                  <option value="Likha Fablab">Likha Fablab</option>
-                  <option value="Material Testing and Calibration Center">Material Testing and Calibration Center</option>
-                  <option value="GIS Development Center">GIS Development Center</option>
-                  <option value="Electronics Systems Research Center">Electronics Systems Research Center</option>
-                  <option value="Center for Technopreneurship and Innovation">Center for Technopreneurship and Innovation</option>
-                  <option value="Digital Transformation Center">Digital Transformation Center</option>
-                  <option value="Office of the Director of STEER Hub">Office of the Director of STEER Hub</option>
-                  <option value="Center for Innovation in Engineering Education">Center for Innovation in Engineering Education</option>
-                  <option value="KIST Park Office">KIST Park Office</option>
+                  <option value="mrc@g.batstate-u.edu.ph">Manufacturing Research Center</option>
+                  <option value="mtcc@g.batstate-u.edu.ph">Material Testing and Calibration Center</option>
+                  <option value="gadc@g.batstate-u.edu.ph">GIS Development Center</option>
+                  <option value="esrc@g.batstate-u.edu.ph">Electronics Systems Research Center</option>
+                  <option value="cti@g.batstate-u.edu.ph">Center for Technopreneurship and Innovation</option>
+                  <option value="dtc@g.batstate-u.edu.ph">Digital Transformation Center</option>
+                  <option value="steerhub@g.batstate-u.edu.ph">Office of the Director of STEER Hub</option>
+                  <option value="ciee@g.batstate-u.edu.ph">Center for Innovation in Engineering Education</option>
+                  <option value="kist@g.batstate-u.edu.ph">KIST Park Office</option>
                 </select>
               </div>
               <div class="form-check mb-3">
@@ -118,6 +120,22 @@
           </div>
           <div class="modal-body">
             <img src="" alt="Sample Image" class="img-fluid">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal fade" id="are_you_sure_cancel_modal" tabindex="-1" aria-labelledby="are_you_sure_cancel_modalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="are_you_sure_cancel_modalLabel">Cancel request?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>cancel request?</p>
+            <button type="submit" class="btn btn-primary">Submit</button>
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       // Send request to the API
-      const response = await fetch('http://localhost:8000/login', {
+      const response = await fetch('http://localhost:81/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -39,7 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (result !== null) {
         // Store the token or a flag in localStorage or sessionStorage
         localStorage.setItem('authToken', result.access_token); // Store the token
+        localStorage.setItem('email', result.email); // Store the token
+        localStorage.setItem('username', result.username); // Store the token
         localStorage.setItem('isAuthenticated', true); // Or store an auth flag
+        console.log(result)
 
         // Redirect to the user dashboard
         window.location.href = './pages/user/index.html'; // Example redirect

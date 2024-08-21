@@ -6,8 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check if the user is authenticated
     const isAuthenticated = localStorage.getItem('isAuthenticated');
     const authToken = localStorage.getItem('authToken');
+    const username = localStorage.getItem('username');
+    const email = localStorage.getItem('email')
     // const username = localStorage.getItem('authToken');
-    const username = "awww"
 
 
     if (!isAuthenticated || !authToken) {
@@ -20,11 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // const username = 'John Doe'; // Replace with the actual username
   document.getElementById('username').innerText = username;
 
+
   const endpoints = {
-    approved: 'https://api.sampleapis.com/beers/ale',
-    pending: 'https://api.sampleapis.com/beers/stouts',
-    rejected: 'https://api.sampleapis.com/beers/red-ale',
-    past: 'https://api.sampleapis.com/beers/ale'
+    approved:`http://localhost:81/visit-requests/?email=${email}&status_type=approved`,
+    pending: `http://localhost:81/visit-requests/?email=${email}&status_type=pending`,
+    rejected: `http://localhost:81/visit-requests/?email=${email}&status_type=rejected`
+    // past: 'https://api.sampleapis.com/beers/ale'
   };
 
   const contentDiv = document.getElementById('content');
@@ -34,9 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const loadRequests = async (type) => {
     try {
       const response = await fetch(endpoints[type]);
+
+      
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
-
+      console.log(data)
       contentDiv.innerHTML = `<h3>${capitalize(type)} Requests</h3>`;
 
       const table = document.createElement('table');
@@ -46,9 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const thead = document.createElement('thead');
       thead.innerHTML = `
         <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Price</th>
-          <th scope="col">Sample</th>
+          <th scope="col">Request ID</th>
+          <th scope="col">Place to be visited</th>
+          <th scope="col">Date of Visit</th>
+          <th scope="col">Status</th>
         </tr>
       `;
       table.appendChild(thead);
@@ -59,11 +64,18 @@ document.addEventListener('DOMContentLoaded', () => {
       data.forEach(item => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${item.name}</td>
-          <td>${item.price}</td>
+          <td>${item.request_id}</td>
+          <td>${item.research_center.split("@")[0].toUpperCase()}</td>
+          <td>${item.visit_date}</td>
+          <td>${item.status}</td>
           <td>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="${item.image}" data-bs-name="${item.name}">
-              View Image
+              Generate QR
+            </button>
+          </td>
+          <td>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="${item.image}" data-bs-name="${item.name}">
+              X
             </button>
           </td>
         `;
@@ -74,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
       contentDiv.appendChild(table);
     } catch (error) {
       console.error('Error fetching requests:', error);
-      contentDiv.innerHTML = `<h3>Error loading ${type} requests. Please try again later.</h3>`;
+      contentDiv.innerHTML = `<h3>No requests found.</h3>`;
     }
   };
 
@@ -95,7 +107,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load default view (Approved Requests)
   loadRequests('approved');
 
-
+//   let mapping_research_center_to_email = {
+//     "Likha Fablab": "fablab@g.batstate-u.edu.ph",
+//     "Material Testing and Calibration Center": "value2",
+//     "GIS Development Center": "value2",
+//     "Electronics Systems Research Center": "value2",
+//     "Center for Technopreneurship and Innovation": "value2",
+//     "Digital Transformation Center": "value2",
+//     "Office of the Director of STEER Hub": "value2",
+//     "Center for Innovation in Engineering Education": "value2",
+//     "KIST Park Office": "value2",
+//     key3: "value3"
+// };
    // Handle the modal display
    const imageModal = document.getElementById('imageModal');
    imageModal.addEventListener('show.bs.modal', (event) => {
@@ -109,7 +132,22 @@ document.addEventListener('DOMContentLoaded', () => {
      modalTitle.textContent = imageName;
      modalImage.src = imageUrl;
    });
+   const cancelModal  = document.getElementById('are_you_sure_cancel_modal');
+   cancelModal.addEventListener('show.bs.modal', (event) => {
+     const button = event.relatedTarget;
+     const imageUrl = button.getAttribute('data-bs-image');
+     const imageName = button.getAttribute('data-bs-name');
+     
+     const modalTitle = imageModal.querySelector('.modal-title');
+     const modalImage = imageModal.querySelector('.modal-body img');
+     
+     modalTitle.textContent = imageName;
+     modalImage.src = imageUrl;
+   });
 
+
+
+   let tdd_visit_type = "group";
     // Handle appointment form submission
     const appointmentForm = document.getElementById('appointmentForm');
     appointmentForm.addEventListener('submit', async (event) => {
@@ -122,16 +160,19 @@ document.addEventListener('DOMContentLoaded', () => {
         // const purpose = document.getElementById('appointment-purpose').value;
 
         const appointmentData = {
-          username,
-          name: username,
-          date: document.getElementById('appointmentDate').value,
-          groupStatus: document.getElementById('groupCheck').checked,
-          purpose: document.getElementById('purpose').value,
-          researchCenter: document.getElementById('researchCenter').value
+          research_center:document.getElementById('researchCenter').value,
+          // visit_type: document.getElementById('groupCheck').checked,
+          visit_type:tdd_visit_type,
+          visit_date: document.getElementById('appointmentDate').value,
+          duration: document.getElementById('visitDuration').value,
+          requestor: email,
+          purpose: document.getElementById('purpose').value
+          
       };
+      console.log(appointmentData)
 
         try {
-            const response = await fetch('https://api.example.com/appointments', {
+            const response = await fetch('http://localhost:81/request-visit/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
