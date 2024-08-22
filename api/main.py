@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks, status
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from sqlalchemy.orm import Session
 from models import VisitRequestModel, ResearchCenterModel, User as UserModel  # SQLAlchemy model
-from schemas import UpdateRequestStatus,UserCreate,VisitRequestResponse,ResearchCenterSignUp, ResearchCenterLogin, ResearchCenterToken,User as UserSchema, UserUpdatePassword, UserLogin, Token, VisitRequest  # Pydantic schemas
+from schemas import FollowUpEmailRequest, UpdateRequestStatus,UserCreate,VisitRequestResponse,ResearchCenterSignUp, ResearchCenterLogin, ResearchCenterToken,User as UserSchema, UserUpdatePassword, UserLogin, Token, VisitRequest  # Pydantic schemas
 from database import SessionLocal, engine, Base
 from passlib.context import CryptContext
 from dotenv import load_dotenv
@@ -376,3 +376,39 @@ def update_request_status(background_tasks: BackgroundTasks,update_data: UpdateR
 # Create the database tables
 # Base.metadata.drop_all(bind=engine) #if need to drop only
 Base.metadata.create_all(bind=engine)
+
+@app.post("/send-follow-up-email/")
+async def send_follow_up_email(request_data: FollowUpEmailRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    # Look up the visit request by request_id
+    visit_request = db.query(VisitRequestModel).filter(VisitRequestModel.request_id == request_data.request_id).first()
+    
+    if not visit_request:
+        raise HTTPException(status_code=404, detail="Visit request not found")
+    
+    # Find the research center email
+    research_center_email = db.query(ResearchCenterModel).filter(ResearchCenterModel.email == visit_request.research_center).first()
+    
+    if not research_center_email:
+        raise HTTPException(status_code=404, detail="Research center not found")
+    
+    # Prepare the email to the research center
+    message = MessageSchema(
+        subject=f"Follow-up on Visit Request {visit_request.request_id}",
+        recipients=[research_center_email.email],
+        body=f"Dear {research_center_email.email.split('@')[0].upper()},\n\n"
+             f"This is a follow-up on the visit request with ID: {visit_request.request_id}.\n\n"
+             f"Details of the request:\n"
+             f"- Requestor: {visit_request.requestor}\n"
+             f"- Visit Date: {visit_request.visit_date}\n"
+             f"- Purpose: {visit_request.purpose}\n"
+             f"- Status: {visit_request.status}\n\n"
+             f"Please provide an update or confirm the status of this request.\n\n"
+             f"Best regards,\n"
+             f"STEERHub GMS Team",
+        subtype="plain"
+    )
+
+    # Send the email in the background
+    background_tasks.add_task(FastMail(conf).send_message, message)
+
+    return {"msg": f"Follow-up email sent to {research_center_email.email} regarding request {visit_request.request_id}"}

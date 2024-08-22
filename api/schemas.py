@@ -93,3 +93,7 @@ class UpdateRequestStatus(BaseModel):
     #             "status": "approved"
     #         }
     #     }
+
+
+class FollowUpEmailRequest(BaseModel):
+    request_id: str

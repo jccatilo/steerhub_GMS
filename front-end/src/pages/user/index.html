@@ -126,23 +126,77 @@
     </div>
 
 
-    <div class="modal fade" id="are_you_sure_cancel_modal" tabindex="-1" aria-labelledby="are_you_sure_cancel_modalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="are_you_sure_cancel_modalLabel">Cancel request?</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <button type="submit" class="btn btn-danger">Yes, cancel and delete this request.</button>
-            <button type="submit" class="btn btn-light">No</button>
-          </div>
-        </div>
+<!-- Cancel Request Modal -->
+<div class="modal fade" id="are_you_sure_cancel_modal" tabindex="-1" aria-labelledby="cancelRequestModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cancelRequestModalLabel">Cancel Request</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to cancel this request?</p>
+        <p>Request ID: <span id="request-id-display"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-danger" id="confirmCancelRequest">Yes</button>
       </div>
     </div>
+  </div>
+</div>
     
+
+    <!-- Follow Up Modal -->
+<div class="modal fade" id="followUpModal" tabindex="-1" aria-labelledby="followUpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="followUpModalLabel">Follow Up Email</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Do you want to send a follow-up email?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" id="sendFollowUpEmail">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Message -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="followUpToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">Notification</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      Follow up email sent!
+    </div>
+  </div>
+</div>
+<!-- QR Code Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="qrCodeModalLabel">QR Code</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="qrcode"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
     
     <script type="module" src="./main.js"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
   </body>
 </html>
