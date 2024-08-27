@@ -374,7 +374,7 @@ def update_request_status(background_tasks: BackgroundTasks,update_data: UpdateR
     return {"msg": f"Request {update_data.request_id} status updated to {update_data.status}"}
 
 # Create the database tables
-# Base.metadata.drop_all(bind=engine) #if need to drop only
+Base.metadata.drop_all(bind=engine) #if need to drop only
 Base.metadata.create_all(bind=engine)
 
 @app.post("/send-follow-up-email/")

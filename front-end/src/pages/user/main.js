@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <th scope="col">Request ID</th>
           <th scope="col">Place to be visited</th>
           <th scope="col">Date of Visit</th>
+          <th scope="col">Creation date</th>
           <th scope="col">Status</th>
           <th scope="col">Actions</th>
         </tr>
@@ -68,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${item.request_id}</td>
           <td>${item.research_center.split("@")[0].toUpperCase()}</td>
           <td>${item.visit_date}</td>
+          <td>${item.created_at}</td>
           <td>${item.status}</td>
           <td>
             ${type === 'pending' ? `
@@ -79,10 +81,10 @@ document.addEventListener('DOMContentLoaded', () => {
               </button>
             ` : ''}
             ${type === 'approved' ? `
-              <button class="btn btn-primary" onclick="generateQrCode('${item.request_id}')">
-                  Generate QR
-                </button>
-                <button class="btn btn-secondary" onclick="generatePdf(${item.request_id}, '${item.research_center}', '${item.visit_date}')">
+              <button class="btn btn-primary" onclick="generateQrCode('${item.request_id}', '${item.research_center}', '${item.visit_date}','${item.status}')">
+                        Generate QR
+                      </button>
+                <button class="btn btn-secondary" onclick="generatePdf('${item.request_id}', '${item.research_center}', '${item.visit_date}')">
                   Generate PDF
                 </button>
             ` : ''}
@@ -100,34 +102,58 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Generate QR Code function - define this in the global scope
-  window.generateQrCode = (text) => {
-    const qrcodeContainer = document.getElementById('qrcode');
-    qrcodeContainer.innerHTML = ''; // Clear previous QR code if any
-    const qrcode = new QRCode(qrcodeContainer, {
-      text: text,
-      width: 128,
-      height: 128,
+  window.generateQrCode = (requestId, researchCenter, visitDate, visitStatus) => {
+    // Create the JSON string with the request details
+    const qrData = JSON.stringify({
+        request_id: requestId,
+        research_center: researchCenter,
+        visit_date: visitDate,
+        status: visitStatus
     });
 
-    // Optionally show the modal to display the QR code
+    // Find the QR code container
+    const qrcodeContainer = document.getElementById('qrcode');
+    qrcodeContainer.innerHTML = ''; // Clear previous QR code if any
+
+    // Check if the QRCode constructor is available and create a new QR code
+    if (QRCode) {
+        new QRCode(qrcodeContainer, {
+            text: qrData,
+            width: 128,
+            height: 128,
+        });
+    } else {
+        console.error('QRCode library not loaded.');
+    }
+
+    // Update modal title with request ID
+    const modalTitle = document.getElementById('imageModalLabel');
+    modalTitle.textContent = `QR Code for Request ID: ${requestId}`;
+
+    // Show the modal with the QR code
     const qrModal = new bootstrap.Modal(document.getElementById('imageModal'));
     qrModal.show();
-  };
+};
 
-  // PDF Generation function using jsPDF - also define in the global scope
-  window.generatePdf = (requestId, researchCenter, visitDate) => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
 
-    doc.text("Visit Request", 10, 10);
-    doc.text(`Request ID: ${requestId}`, 10, 20);
-    doc.text(`Research Center: ${researchCenter}`, 10, 30);
-    doc.text(`Visit Date: ${visitDate}`, 10, 40);
+window.generatePdf = (requestId, researchCenter, visitDate) => {
 
-    doc.save(`Request_${requestId}.pdf`);
-  };
+  // Show the "Under Construction" modal
+  const underConstructionModal = new bootstrap.Modal(document.getElementById('underConstructionModal'));
+  underConstructionModal.show();
 
+// uncomment code below if the real thing na.
+
+    // const { jsPDF } = window.jspdf;
+    // const doc = new jsPDF();
+
+    // doc.text("Visit Request", 10, 10);
+    // doc.text(`Request ID: ${requestId}`, 10, 20);
+    // doc.text(`Research Center: ${researchCenter}`, 10, 30);
+    // doc.text(`Visit Date: ${visitDate}`, 10, 40);
+
+    // doc.save(`Request_${requestId}.pdf`);
+};
 
     // Follow-up email modal logic
     const followUpModal = document.getElementById('followUpModal');
@@ -187,18 +213,18 @@ document.addEventListener('DOMContentLoaded', () => {
   loadRequests('approved');
 
    // Handle the modal display
-   const imageModal = document.getElementById('imageModal');
-   imageModal.addEventListener('show.bs.modal', (event) => {
-     const button = event.relatedTarget;
-     const imageUrl = button.getAttribute('data-bs-image');
-     const imageName = button.getAttribute('data-bs-name');
+  //  const imageModal = document.getElementById('imageModal');
+  //  imageModal.addEventListener('show.bs.modal', (event) => {
+  //    const button = event.relatedTarget;
+  //    const imageUrl = button.getAttribute('data-bs-image');
+  //    const imageName = button.getAttribute('data-bs-name');
      
-     const modalTitle = imageModal.querySelector('.modal-title');
-     const modalImage = imageModal.querySelector('.modal-body img');
+  //    const modalTitle = imageModal.querySelector('.modal-title');
+  //    const modalImage = imageModal.querySelector('.modal-body img');
      
-     modalTitle.textContent = imageName;
-     modalImage.src = imageUrl;
-   });
+  //    modalTitle.textContent = imageName;
+  //    modalImage.src = imageUrl;
+  //  });
    let currentRequestId = null;  // To store the request ID for cancellation
 
   const cancelRequestModal = document.getElementById('are_you_sure_cancel_modal');
