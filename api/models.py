@@ -42,3 +42,5 @@ class ResearchCenterModel(Base):
     password = Column(String(255))
     max_guest_capacity = Column(Integer)
     created_at = Column(DateTime(timezone=True), server_default=func.now())  # Timestamp column
+
+

@@ -97,3 +97,10 @@ class UpdateRequestStatus(BaseModel):
 
 class FollowUpEmailRequest(BaseModel):
     request_id: str
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+class PasswordResetRequest(BaseModel):
+    email: EmailStr

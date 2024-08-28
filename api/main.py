@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks, status
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from sqlalchemy.orm import Session
 from models import VisitRequestModel, ResearchCenterModel, User as UserModel  # SQLAlchemy model
-from schemas import FollowUpEmailRequest, UpdateRequestStatus,UserCreate,VisitRequestResponse,ResearchCenterSignUp, ResearchCenterLogin, ResearchCenterToken,User as UserSchema, UserUpdatePassword, UserLogin, Token, VisitRequest  # Pydantic schemas
+from schemas import PasswordResetRequest, FollowUpEmailRequest, ResetPasswordRequest, UpdateRequestStatus,UserCreate,VisitRequestResponse,ResearchCenterSignUp, ResearchCenterLogin, ResearchCenterToken,User as UserSchema, UserUpdatePassword, UserLogin, Token, VisitRequest  # Pydantic schemas
 from database import SessionLocal, engine, Base
 from passlib.context import CryptContext
 from dotenv import load_dotenv
@@ -13,6 +13,10 @@ from typing import Union,List
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from fastapi.middleware.cors import CORSMiddleware
+
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+
+
 app = FastAPI()
 
 
@@ -33,6 +37,7 @@ MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
 MAIL_FROM = os.getenv("MAIL_FROM")
 MAIL_SERVER = os.getenv("MAIL_SERVER")
 SECRET_KEY = os.getenv("SECRET_KEY")
+serializer = URLSafeTimedSerializer(SECRET_KEY) #for request-password-reset and reset-password
 # Email Configuration
 conf = ConnectionConfig(
     MAIL_USERNAME = MAIL_USERNAME,
@@ -116,7 +121,25 @@ def update_user_password(user_update: UserUpdatePassword, db: Session = Depends(
     db.commit()
     return {"msg": "Password updated successfully"}
 
+@app.post("/users/reset-password")
+async def reset_password(token: str, new_password: str, db: Session = Depends(get_db)):
+    try:
+        # Verify the token and extract the email
+        email = serializer.loads(token, salt="password-reset-salt", max_age=3600)
+    except (SignatureExpired, BadSignature):
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
 
+    # Find the user by email
+    user = db.query(UserModel).filter(UserModel.email == email).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Hash and update the user's password
+    user.password = get_password_hash(new_password)
+    db.commit()
+
+    return {"msg": "Password has been reset successfully"}
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
@@ -412,3 +435,63 @@ async def send_follow_up_email(request_data: FollowUpEmailRequest, background_ta
     background_tasks.add_task(FastMail(conf).send_message, message)
 
     return {"msg": f"Follow-up email sent to {research_center_email.email} regarding request {visit_request.request_id}"}
+
+
+
+@app.post("/request-password-reset/")
+
+@app.post("/request-password-reset/")
+async def request_password_reset(request_data: PasswordResetRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    email = request_data.email
+    print(f"looking up {email}")
+    
+    # Look up the user by email
+    user = db.query(UserModel).filter(UserModel.email == email).first()
+
+    if not user:
+        print("user / email not found")
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Generate a password reset token
+    token = serializer.dumps(email, salt="password-reset-salt")
+
+    # Construct the password reset link
+    reset_link = f"http://localhost:8080/pages/reset-password/index.html?token={token}"
+
+    # Prepare the email message
+    message = MessageSchema(
+        subject="Password Reset Request",
+        recipients=[user.email],
+        body=f"Hi {user.username},\n\n"
+             f"You requested a password reset. Click the link below to reset your password:\n\n"
+             f"{reset_link}\n\n"
+             f"If you did not request a password reset, please ignore this email.\n\n"
+             f"Best regards,\n"
+             f"Your Service Team",
+        subtype="plain"
+    )
+
+    # Send the email in the background
+    background_tasks.add_task(FastMail(conf).send_message, message)
+
+    return {"msg": f"Password reset link sent to {email}"}
+
+@app.put("/users/reset-password")
+async def reset_password(request: ResetPasswordRequest, db: Session = Depends(get_db)):
+    try:
+        # Verify the token and extract the email
+        email = serializer.loads(request.token, salt="password-reset-salt", max_age=3600)
+    except (SignatureExpired, BadSignature):
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+
+    # Find the user by email
+    user = db.query(UserModel).filter(UserModel.email == email).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Hash and update the user's password
+    user.password = get_password_hash(request.new_password)
+    db.commit()
+
+    return {"msg": "Password has been reset successfully"}
