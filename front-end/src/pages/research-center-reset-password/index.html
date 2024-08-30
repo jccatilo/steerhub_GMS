@@ -46,7 +46,7 @@
 
                     if (response.ok) {
                         alert('Password reset successful!');
-                        window.location.href = '/login.html';  // Redirect to login page
+                        window.location.href = '../../pages/research-center-login/index.html';  // Redirect to login page
                     } else {
                         const errorData = await response.json();
                         alert(`Error: ${errorData.detail}`);
@@ -58,5 +58,6 @@
             });
         });
     </script>
+    <script type="module" src="./main.js"></script>
 </body>
 </html>

@@ -6,14 +6,22 @@
     <title>User Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="./scss/styles.scss">
-    <script type="module" crossorigin src="/assets/user-Cre0UdY7.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/bootstrap.esm-CPz0pknf.js">
-    <link rel="stylesheet" crossorigin href="/assets/user-DyzcTPtF.css">
+    <script type="module" crossorigin src="/assets/user-BxWfAAfe.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="/assets/bootstrap.esm-D_59DZ1Y.js">
+    <link rel="stylesheet" crossorigin href="/assets/user-C3LCAvxI.css">
   </head>
   <body>
+    
     <div class="container my-5">
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Welcome, <span id="username">User</span>!</h1>
+        <h1>Welcome, <span id="username" class="username-text">User</span>!</h1>
+        <div class="container my-5">
+          <!-- Logout Button Container -->
+          <div class="d-flex justify-content-end">
+            <button id="logoutBtn" class="btn btn-danger">Logout</button>
+          </div>
+        </div>
 
         <!-- Hamburger Menu Button -->
         <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,9 +42,7 @@
               <li class="nav-item">
                 <a class="nav-link" href="#" id="rejected-link">Rejected Requests</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#" id="past-link">Past Visits</a>
-              </li>
+              
             </ul>
           </div>
         </div>
@@ -78,17 +84,21 @@
                 <input type="datetime-local" class="form-control" id="appointmentDate" required>
               </div>
               <div class="mb-3">
+                <label for="visitDuration" class="form-label">Duration</label>
+                <input type="number" class="form-control" id="visitDuration" placeholder="Enter duration (hrs)" min="1" required>
+              </div>
+              <div class="mb-3">
                 <label for="researchCenter" class="form-label">Research Center</label>
                 <select class="form-select" id="researchCenter" required>
-                  <option value="Likha Fablab">Likha Fablab</option>
-                  <option value="Material Testing and Calibration Center">Material Testing and Calibration Center</option>
-                  <option value="GIS Development Center">GIS Development Center</option>
-                  <option value="Electronics Systems Research Center">Electronics Systems Research Center</option>
-                  <option value="Center for Technopreneurship and Innovation">Center for Technopreneurship and Innovation</option>
-                  <option value="Digital Transformation Center">Digital Transformation Center</option>
-                  <option value="Office of the Director of STEER Hub">Office of the Director of STEER Hub</option>
-                  <option value="Center for Innovation in Engineering Education">Center for Innovation in Engineering Education</option>
-                  <option value="KIST Park Office">KIST Park Office</option>
+                  <option value="mrc@g.batstate-u.edu.ph">Manufacturing Research Center</option>
+                  <option value="mtcc@g.batstate-u.edu.ph">Material Testing and Calibration Center</option>
+                  <option value="gadc@g.batstate-u.edu.ph">GIS Development Center</option>
+                  <option value="esrc@g.batstate-u.edu.ph">Electronics Systems Research Center</option>
+                  <option value="cti@g.batstate-u.edu.ph">Center for Technopreneurship and Innovation</option>
+                  <option value="dtc@g.batstate-u.edu.ph">Digital Transformation Center</option>
+                  <option value="steerhub@g.batstate-u.edu.ph">Office of the Director of STEER Hub</option>
+                  <option value="ciee@g.batstate-u.edu.ph">Center for Innovation in Engineering Education</option>
+                  <option value="kist@g.batstate-u.edu.ph">KIST Park Office</option>
                 </select>
               </div>
               <div class="form-check mb-3">
@@ -111,12 +121,12 @@
     </div>
     
 
-
+<!-- 
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="imageModalLabel">Sample Image</h5>
+            <h5 class="modal-title" id="imageModalLabel">Sample Images</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
@@ -124,9 +134,115 @@
           </div>
         </div>
       </div>
+    </div> -->
+
+
+<!-- Cancel Request Modal -->
+<div class="modal fade" id="are_you_sure_cancel_modal" tabindex="-1" aria-labelledby="cancelRequestModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cancelRequestModalLabel">Cancel Request</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to cancel this request?</p>
+        <p>Request ID: <span id="request-id-display"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-danger" id="confirmCancelRequest">Yes</button>
+      </div>
     </div>
+  </div>
+</div>
     
+
+    <!-- Follow Up Modal -->
+<div class="modal fade" id="followUpModal" tabindex="-1" aria-labelledby="followUpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="followUpModalLabel">Follow Up Email</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Do you want to send a follow-up email?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" id="sendFollowUpEmail">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Message -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="followUpToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">Notification</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      Follow up email sent!
+    </div>
+  </div>
+</div>
+
+
+ <!-- QR Code Modal -->
+ <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="imageModalLabel">QR Code for Request</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <!-- This div will contain the QR code and center it -->
+        <div id="qrcode" class="d-flex justify-content-center align-items-center mb-3"></div>
+        <!-- Message for the user -->
+        <h3 class="mt-4">Show this QR-code upon entering the STEERHub building.</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="underConstructionModal" tabindex="-1" aria-labelledby="underConstructionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="underConstructionModalLabel">Feature Under Construction</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>This feature is under construction. Please check back later.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+      // Clear all local storage data
+      localStorage.clear();
+
+      // Clear session storage (if any data was stored in session storage)
+      sessionStorage.clear();
+
+      // Redirect to /pages
+      window.location.href = '/pages';
+  });
+</script>
+
     
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
   </body>
 </html>

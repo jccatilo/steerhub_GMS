@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Research Center Dashboard</title>
+  <script type="module" crossorigin src="/assets/research_center_dashboard-BWH1BRfK.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="/assets/bootstrap.esm-D_59DZ1Y.js">
+  <link rel="stylesheet" crossorigin href="/assets/research_center_dashboard-D8-ok0e7.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Greeting Message -->
+        <h2 id="greeting" class="mt-3 text-center"></h2>
+
+        <!-- <h1 class="mt-3 text-center">Research Center Dashboard</h1> -->
+
+        <!-- Modern Minimalist Navbar with Logout Button -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm mb-4">
+            <div class="container-fluid justify-content-between">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <button id="pending-btn" class="btn btn-link nav-link active">Pending</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="approved-btn" class="btn btn-link nav-link">Approved</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="cancelled-btn" class="btn btn-link nav-link">Cancelled</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="rejected-btn" class="btn btn-link nav-link">Rejected</button>
+                    </li>
+                </ul>
+                <!-- Logout Button -->
+                <button id="logout-btn" class="btn btn-danger">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Table to Display Requests -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Created At</th>
+                        <th>Request ID</th>
+                        <th>Requestor</th>
+                        <th>Purpose</th>
+                        <th>Visit Date</th>
+                        <th>Visit Type</th>
+                        <th>Duration</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="requests-table-body">
+                    <!-- Data will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Action Modal -->
+    <div class="modal fade" id="actionModal" tabindex="-1" aria-labelledby="actionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="actionModalLabel">Request ID: <span id="modal-request-id"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="status-select" class="form-label">Change Status</label>
+                        <select id="status-select" class="form-select">
+                            <option value="approved">Approve</option>
+                            <option value="rejected">Reject</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="center-remarks" class="form-label">Center Remarks</label>
+                        <textarea id="center-remarks" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="save-action" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

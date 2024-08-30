@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner</title>
+    <script src="html5-qrcode.min.js"></script>
+    <style>
+        /* Add styles for the prettified JSON output */
+        #result {
+            margin-top: 20px;
+            font-family: Arial, sans-serif;
+        }
+        #statusApproved {
+            color: green;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .centered-div {
+        display: flex;
+        justify-content: center; /* Centers horizontally */
+    }
+    </style>
+</head>
+<body>
+    <div class="centered-div">
+         <h1>STEERHub Guest Management System</h1>
+        </div>
+        
+        <div class="centered-div"><div style="width: 500px;" id="reader"></div></div>
+        <div class="centered-div">
+            <p><i>Instruction: Log in to your GMS account, press generate QR Code, and position in front of this screen</i></p><br>
+           </div>
+        <div class="centered-div"><div id="result"></div></div>
+    
+</div>
+
+    <!-- Audio element for the notification sound -->
+    <audio id="statusSound" src="./audio/visit_verified.mp3"></audio>
+    <audio id="mtccLocation" src="./audio/mtcc.mp3"></audio>
+    <audio id="mrcLocation" src="./audio/mrc.mp3"></audio>
+    <audio id="gadcLocation" src="./audio/gadc.mp3"></audio>
+    <audio id="esrcLocation" src="./audio/esrc.mp3"></audio>
+    <audio id="ctiLocation" src="./audio/cti.mp3"></audio>
+    <audio id="dtcLocation" src="./audio/dtc.mp3"></audio>
+    <audio id="steerhubLocation" src="./audio/steerhub.mp3"></audio>
+    <audio id="kistLocation" src="./audio/kist.mp3"></audio>
+    <audio id="cieeLocation" src="./audio/ciee.mp3"></audio>
+    <audio id="devlabLocation" src="./audio/devlab.mp3"></audio>
+    <audio id="simulabLocation" src="./audio/simulab.mp3"></audio>
+    <audio id="avrLocation" src="./audio/avr.mp3"></audio>
+    <audio id="locatorLocation" src="./audio/locator.mp3"></audio>
+    <audio id="eventsLocation" src="./audio/fifth.mp3"></audio>
+
+    <script>
+
+        // Function to sleep for a specified number of milliseconds
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Function to play the audio sequence
+        async function playAudioSequence() {
+            try {
+                // Play the status sound and wait for it to finish
+                await document.getElementById('statusSound').play();
+
+                // Optional sleep for 2 seconds
+                await sleep(4000);
+
+                // Play research center-specific sounds
+                if (research_center === 'MTCC') {
+                    await document.getElementById('mtccLocation').play();
+                }
+                if (research_center === 'MRC') {
+                    await document.getElementById('mrcLocation').play();
+                }
+                if (research_center === 'GADC') {
+                    await document.getElementById('gadcLocation').play();
+                }
+                if (research_center === 'ESRC') {
+                    await document.getElementById('esrcLocation').play();
+                }
+                if (research_center === 'CTI') {
+                    await document.getElementById('ctiLocation').play();
+                }
+                if (research_center === 'DTC') {
+                    await document.getElementById('dtcLocation').play();
+                }
+                if (research_center === 'KIST') {
+                    await document.getElementById('kistLocation').play();
+                }
+                if (research_center === 'CIEE') {
+                    await document.getElementById('cieeLocation').play();
+                }
+                if (research_center === 'STEERHUB') {
+                    await document.getElementById('steerhubLocation').play();
+                }
+                if (research_center === 'DEVLAB') {
+                    await document.getElementById('devlabLocation').play();
+                }
+
+            } catch (error) {
+                console.error('Error playing audio:', error);
+            }
+        }
+
+function onScanSuccess(decodedText, decodedResult) {
+            const resultElement = document.getElementById('result');
+
+            try {
+                // Parse the scanned text as JSON
+                const scannedData = JSON.parse(decodedText);
+                research_center = scannedData.research_center.split("@")[0].toUpperCase()
+                // Prettify and display the scanned data
+                resultElement.innerHTML = `
+                    <h2>Status:
+                    ${scannedData.status === 'approved' 
+                        ? `<span id="statusApproved">Approved</span>` 
+                        : scannedData.status}</h2>
+                    <h2>Place to be visited: <strong>${research_center || 'No message available'}</strong></h2>
+                    
+                `;
+                // Check if the status is approved and play the audio sequence
+        if (scannedData.status === 'approved') {
+            playAudioSequence();
+        }
+
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                resultElement.innerText = 'Invalid QR Code format';
+            }
+
+            // Clear the result after 3 seconds (optional)
+            setTimeout(() => {
+                resultElement.innerHTML = '';
+            }, 5000);
+        }
+
+        function onScanFailure(error) {
+            // Handle scan failure (optional)
+            console.warn(`QR code scan error: ${error}`);
+        }
+
+        let html5QrCode = new Html5Qrcode("reader");
+        html5QrCode.start(
+            { facingMode: "environment" }, // Use back camera
+            {
+                fps: 10,    // Set scanning frequency
+                qrbox: { width: 250, height: 250 }  // Set scanning box size
+            },
+            onScanSuccess,
+            onScanFailure
+        ).catch(err => {
+            console.error(`Unable to start QR code scanning: ${err}`);
+        });
+    </script>
+</body>
+</html>

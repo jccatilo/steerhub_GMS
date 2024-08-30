@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Forgot Password</title>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"> -->
+  <script type="module" crossorigin src="/assets/research_center_forgot_password-D1oITLHE.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="/assets/bootstrap.esm-D_59DZ1Y.js">
+  <link rel="stylesheet" crossorigin href="/assets/register-C2DhXkip.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-md-6">
+                <div class="logo-container text-center">
+                    <div class="row justify-content-center">
+                        <div class="col-8">
+                            <img src="/assets/img/logo.png" alt="Logo" class="img-fluid mb-3">
+                        </div>
+                        <div class="col-8">
+                            <h1 style="color: darkred;">STEER Hub Guest Management System</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 d-flex justify-content-center">
+                <div class="glass-card">
+                    <h1>Reset Password</h1>
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Registered Email</label>
+                            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send password reset link to this email</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="resetToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">Success</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    Password reset link sent! Please check your email.
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
