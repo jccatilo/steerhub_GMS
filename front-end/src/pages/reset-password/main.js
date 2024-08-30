@@ -1,5 +1,7 @@
 import './styles.scss';
 import * as bootstrap from 'bootstrap';
+import { CONFIG } from '../../gms_config.js';  // Import the configuration from gms_config.js
+
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById('resetPasswordForm');
     const message = document.getElementById('message');
@@ -19,8 +21,12 @@ document.addEventListener("DOMContentLoaded", function() {
         const newPassword = document.getElementById('newPassword').value;
         
         try {
+            // Construct the API URL using the configuration
+            const apiUrl = `${CONFIG.API_URL}:${CONFIG.API_PORT}/users/reset-password`;
+            console.log('API URL:', apiUrl);  // Debugging log
+
             // Send the new password to the backend
-            const response = await fetch('http://localhost:81/users/reset-password', {
+            const response = await fetch(apiUrl, {
                 method: 'PUT',  // Use PUT method
                 headers: {
                     'Content-Type': 'application/json'

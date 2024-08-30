@@ -21,7 +21,7 @@ app = FastAPI()
 
 
 
-origins=["*", "http://localhost:8080"]
+origins=["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -36,6 +36,10 @@ MAIL_USERNAME = os.getenv("MAIL_USERNAME")
 MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
 MAIL_FROM = os.getenv("MAIL_FROM")
 MAIL_SERVER = os.getenv("MAIL_SERVER")
+
+URL_FRONT_END_APP = os.getenv("URL_FRONT_END_APP")
+PORT_FRONT_END_APP= os.getenv("PORT_FRONT_END_APP")
+
 SECRET_KEY = os.getenv("SECRET_KEY")
 serializer = URLSafeTimedSerializer(SECRET_KEY) #for request-password-reset and reset-password
 # Email Configuration
@@ -454,7 +458,7 @@ async def request_password_reset(request_data: PasswordResetRequest, background_
     token = serializer.dumps(email, salt="password-reset-salt")
 
     # Construct the password reset link
-    reset_link = f"http://localhost:8080/pages/reset-password/index.html?token={token}"
+    reset_link = f"{URL_FRONT_END_APP}:{PORT_FRONT_END_APP}/pages/reset-password/index.html?token={token}"
 
     # Prepare the email message
     message = MessageSchema(
@@ -529,7 +533,7 @@ async def request_password_reset(background_tasks: BackgroundTasks, email: Email
     db.commit()
     
     # Construct the reset link with the token
-    reset_link = f"http://localhost:8080/pages/research-center-reset-password/index.html?token={research_center.reset_token}"
+    reset_link = f"{URL_FRONT_END_APP}:{PORT_FRONT_END_APP}/pages/research-center-reset-password/index.html?token={research_center.reset_token}"
     
     # Construct the email content
     message = MessageSchema(

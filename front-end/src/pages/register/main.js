@@ -1,5 +1,6 @@
 import './styles.scss';
 import * as bootstrap from 'bootstrap';
+import { CONFIG } from '../../gms_config.js';  // Adjust the path according to your project structure
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('loginForm');
@@ -22,8 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
+            // Construct the API URL
+            const apiUrl = `${CONFIG.API_URL}:${CONFIG.API_PORT}/users`;
+            console.log('API URL:', apiUrl);  // Debugging the constructed URL
+
             // Send request to the API
-            const response = await fetch('http://localhost:81/users', {  // Replace with your API endpoint
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -37,15 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const result = await response.json();
 
-            console.log(response.status)
+            console.log(response.status);
 
-            if (response.status == 200) {
-
-                console.log("signup successful")
+            if (response.status === 200) {
+                console.log("Signup successful");
 
                 // Show the toast notification
                 const toastElement = document.getElementById('signupToast');
-                // console.log(toastElement)
                 const toast = new bootstrap.Toast(toastElement);
                 toast.show();
 
@@ -56,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 // Handle signup failure
                 alert('Signup failed: ' + result.message);
-
             }
         } catch (error) {
             console.error('Error during signup:', error);

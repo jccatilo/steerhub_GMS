@@ -2,6 +2,7 @@
 import './styles.scss';
 // Import all of Bootstrap's JS
 import * as bootstrap from 'bootstrap';
+import { CONFIG } from '../../gms_config.js';  // Adjust the path according to your project structure
 
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('loginForm');
@@ -16,7 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Submitting form with email:', email); // Debugging log
 
         try {
-            const response = await fetch('http://localhost:81/research-center/request-password-reset/', {
+            // Construct the API URL using the configuration
+            const apiUrl = `${CONFIG.API_URL}:${CONFIG.API_PORT}/research-center/request-password-reset/`;
+            console.log('API URL:', apiUrl);  // Debugging log
+
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

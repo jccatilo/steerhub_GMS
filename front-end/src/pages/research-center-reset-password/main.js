@@ -1,42 +1,40 @@
-// Import our custom CSS
 import './styles.scss';
-// Import all of Bootstrap's JS
 import * as bootstrap from 'bootstrap';
+import { CONFIG } from '../../gms_config.js';  // Ensure the path is correct relative to your project structure
 
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('loginForm');
-    const toastElement = document.getElementById('resetToast');
-    const toast = new bootstrap.Toast(toastElement);
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');  // Extract the token from the URL
+    const form = document.getElementById('resetForm');
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
-        console.log('Submitting form with email:', email); // Debugging log
+        // Construct the API URL dynamically using the configuration
+        const apiUrl = `${CONFIG.API_URL}:${CONFIG.API_PORT}/research-center/reset-password/`;
+        console.log('API URL:', apiUrl);  // Debugging the constructed URL
 
         try {
-            const response = await fetch('http://localhost:81/research-center/request-password-reset/', {
-                method: 'POST',
+            const response = await fetch(apiUrl, {
+                method: 'PUT',  // Use PUT method
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email: email })
+                body: JSON.stringify({ token: token, new_password: password })  // Send token and new password
             });
 
-            console.log('Response status:', response.status); // Debugging log
-
             if (response.ok) {
-                console.log('Request successful, showing toast'); // Debugging log
-                toast.show();
+                alert('Password reset successful!');
+                window.location.href = '../../pages/research-center-login/index.html';  // Redirect to login page
             } else {
                 const errorData = await response.json();
-                console.error('Error response:', errorData); // Debugging log
-                alert(`Error: ${errorData.detail || 'Failed to send reset link.'}`);
+                alert(`Error: ${errorData.detail}`);
             }
         } catch (error) {
-            console.error('Network or other error:', error); // Debugging log
-            alert('An error occurred while trying to send the reset link. Please try again later.');
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
         }
     });
 });

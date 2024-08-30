@@ -8,6 +8,8 @@ import Alert from 'bootstrap/js/dist/alert';
 // Or, specify which plugins you need:
 import { Tooltip, Toast, Popover } from 'bootstrap';
 
+import { CONFIG } from '../../gms_config.js';  // Adjust the path according to your project structure
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('loginForm');
     console.log('myform:', form);
@@ -27,18 +29,22 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Sending request to API:', requestData);
 
         try {
-            const response = await fetch('http://localhost:81/research-center/login/', {
+            // Construct the API URL using the configuration
+            const apiUrl = `${CONFIG.API_URL}:${CONFIG.API_PORT}/research-center/login/`;
+            console.log('API URL:', apiUrl);  // Debugging log
+
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(requestData)
             });
-            console.log(requestData)
+
             // Log the entire response object for further inspection
             console.log('Response received:', response);
 
-            if (response) {
+            if (response.ok) {
                 const result = await response.json();
                 console.log('Success:', result);
 

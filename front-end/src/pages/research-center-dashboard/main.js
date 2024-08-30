@@ -2,6 +2,7 @@
 import './styles.scss';
 // Import all of Bootstrap's JS
 import * as bootstrap from 'bootstrap';
+import { CONFIG } from '../../gms_config.js';  // Adjust the path according to your project structure
 
 let currentRequestId = null; // Make currentRequestId globally accessible
 
@@ -47,7 +48,10 @@ function fetchRequests(email, status) {
     // Clear any existing rows in the table before fetching new data
     tableBody.innerHTML = '';
 
-    fetch(`http://localhost:81/research-center-requests/?email=${encodeURIComponent(email)}&status=${encodeURIComponent(status)}`)
+    const apiUrl = `${CONFIG.API_URL}:${CONFIG.API_PORT}/research-center-requests/?email=${encodeURIComponent(email)}&status=${encodeURIComponent(status)}`;
+    console.log('API URL:', apiUrl);  // Debugging the constructed URL
+
+    fetch(apiUrl)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Failed to fetch ${status} requests: ${response.statusText}`);
@@ -99,8 +103,11 @@ window.openActionModal = function(requestId) {
 }
 
 function saveAction(requestId, status, remarks) {
+    const apiUrl = `${CONFIG.API_URL}:${CONFIG.API_PORT}/update-request-status/`;
+    console.log('API URL:', apiUrl);  // Debugging the constructed URL
+
     // Perform PUT request to update the status and remarks
-    fetch(`http://localhost:81/update-request-status/`, {
+    fetch(apiUrl, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'

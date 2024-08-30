@@ -1,3 +1,6 @@
+import './styles.scss';
+import { CONFIG } from '../../gms_config.js';  // Import the configuration from gms_config.js
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('loginForm');
 
@@ -15,7 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await fetch('http://localhost:81/research-center/signup/', {
+            // Construct the API URL using the configuration
+            const apiUrl = `${CONFIG.API_URL}:${CONFIG.API_PORT}/research-center/signup/`;
+            console.log('API URL:', apiUrl);  // Debugging log
+
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

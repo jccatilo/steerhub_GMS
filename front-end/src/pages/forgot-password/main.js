@@ -1,5 +1,6 @@
 import './styles.scss';
 import * as bootstrap from 'bootstrap';
+import { CONFIG } from '../../gms_config.js';  // Adjust the path according to your project structure
 
 document.addEventListener("DOMContentLoaded", function() {
     const loginForm = document.getElementById("loginForm");
@@ -12,8 +13,12 @@ document.addEventListener("DOMContentLoaded", function() {
         const email = emailInput.value.trim(); // Trim any extra whitespace
 
         if (email) {
+            // Construct the API URL
+            const apiUrl = `${CONFIG.API_URL}:${CONFIG.API_PORT}/request-password-reset/`;
+            console.log('API URL:', apiUrl);  // Debugging the constructed URL
+
             // Make the request to the backend
-            fetch('http://localhost:81/request-password-reset/', {
+            fetch(apiUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

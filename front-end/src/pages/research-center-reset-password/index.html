@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./scss/styles.scss">
 </head>
 <body>
+    
     <div class="container">
         <div class="row align-items-center justify-content-center">
             <div class="col-md-6 d-flex justify-content-center">
@@ -23,40 +24,6 @@
             </div>
         </div>
     </div>
-
-    <script type="module">
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get('token');  // Extract the token from the URL
-            const form = document.getElementById('resetForm');
-
-            form.addEventListener('submit', async (event) => {
-                event.preventDefault();
-
-                const password = document.getElementById('password').value;
-
-                try {
-                    const response = await fetch('http://localhost:81/research-center/reset-password/', {
-                        method: 'PUT',  // Use PUT method
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ token: token, new_password: password })  // Send token and new password
-                    });
-
-                    if (response.ok) {
-                        alert('Password reset successful!');
-                        window.location.href = '../../pages/research-center-login/index.html';  // Redirect to login page
-                    } else {
-                        const errorData = await response.json();
-                        alert(`Error: ${errorData.detail}`);
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('An error occurred. Please try again.');
-                }
-            });
-        });
     </script>
     <script type="module" src="./main.js"></script>
 </body>
