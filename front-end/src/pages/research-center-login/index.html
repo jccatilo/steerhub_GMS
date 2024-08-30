@@ -3,13 +3,52 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap w/ Vite</title>
+    <title>Login Page</title>
+    <link rel="stylesheet" href="../../scss/styles.scss">
   </head>
   <body>
-    <div class="container py-4 px-3 mx-auto">
-      <h1>Research Center Visit Login page</h1>
-      <button class="btn btn-primary">Primary button</button>
+    <div class="container">
+      <div class="row align-items-center justify-content-center">
+        <div class="col-md-6">
+          <div class="logo-container text-center">
+            <div class="row justify-content-center">
+              <div class="col-8">
+                <img src="../../assets/img/logo.png" alt="Logo" class="img-fluid mb-3">
+              </div>
+              <div class="col-8">
+                <h1 style="color: darkred;">STEER Hub Guest Management System</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 d-flex justify-content-center">
+          <div class="glass-card">
+            <h1>Research Center Login</h1>
+            <form id="loginForm">
+              <div class="mb-3">
+                <label for="email" class="form-label">Research Center Email address</label>
+                <input type="email" class="form-control" id="email" aria-describedby="emailHelp" required>
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Login</button>
+              <div class="form-text mt-3">
+                <a href="../../pages/research-center-forgot-password/index.html">Forgot password?</a>
+              </div>
+              <div class="form-text mt-2">
+                Not yet registered? <a href="../../pages/research-center-sign-up/index.html">Click here</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3"></div>
+
     <script type="module" src="./main.js"></script>
   </body>
 </html>

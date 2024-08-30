@@ -1,9 +1,9 @@
-from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks, status
-
+from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks, status,Query, status
+import secrets
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from sqlalchemy.orm import Session
 from models import VisitRequestModel, ResearchCenterModel, User as UserModel  # SQLAlchemy model
-from schemas import PasswordResetRequest, FollowUpEmailRequest, ResetPasswordRequest, UpdateRequestStatus,UserCreate,VisitRequestResponse,ResearchCenterSignUp, ResearchCenterLogin, ResearchCenterToken,User as UserSchema, UserUpdatePassword, UserLogin, Token, VisitRequest  # Pydantic schemas
+from schemas import EmailSchema, PasswordResetRequest, FollowUpEmailRequest, ResearchCenterPasswordResetRequest, ResearchCenterResetPassword, ResetPasswordRequest, UpdateRequestStatus,UserCreate,VisitRequestResponse,ResearchCenterSignUp, ResearchCenterLogin, ResearchCenterToken,User as UserSchema, UserUpdatePassword, UserLogin, Token, VisitRequest  # Pydantic schemas
 from database import SessionLocal, engine, Base
 from passlib.context import CryptContext
 from dotenv import load_dotenv
@@ -11,7 +11,7 @@ import os
 from typing import Union,List
 
 from jose import JWTError, jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from fastapi.middleware.cors import CORSMiddleware
 
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
@@ -396,9 +396,7 @@ def update_request_status(background_tasks: BackgroundTasks,update_data: UpdateR
 
     return {"msg": f"Request {update_data.request_id} status updated to {update_data.status}"}
 
-# Create the database tables
-# Base.metadata.drop_all(bind=engine) #if need to drop only
-Base.metadata.create_all(bind=engine)
+
 
 @app.post("/send-follow-up-email/")
 async def send_follow_up_email(request_data: FollowUpEmailRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
@@ -495,3 +493,90 @@ async def reset_password(request: ResetPasswordRequest, db: Session = Depends(ge
     db.commit()
 
     return {"msg": "Password has been reset successfully"}
+
+
+
+@app.get("/research-center-requests/", response_model=List[VisitRequestResponse])
+def get_visit_requests_by_center_email_and_status(
+    email: str = Query(..., description="Email of the research center"),
+    status: str = Query(..., description="Status of the visit request"),
+    db: Session = Depends(get_db)
+):
+    # Query the visit_requests table based on research center's email and status
+    visit_requests = db.query(VisitRequestModel).filter(
+        VisitRequestModel.research_center == email,
+        VisitRequestModel.status == status
+    ).all()
+
+    if not visit_requests:
+        raise HTTPException(status_code=404, detail="No matching visit requests found")
+    
+    return visit_requests
+
+
+@app.post("/research-center/request-password-reset/")
+async def request_password_reset(background_tasks: BackgroundTasks, email: EmailSchema, db: Session = Depends(get_db)):
+    # Query the research center by email
+    research_center = db.query(ResearchCenterModel).filter_by(email=email.email).first()
+    
+    if not research_center:
+        raise HTTPException(status_code=404, detail="Email not found")
+
+     # Create a reset token and set expiration
+    reset_token = create_access_token({"sub": research_center.email}, expires_delta=timedelta(minutes=15))
+    research_center.reset_token = reset_token
+    research_center.reset_token_expiration = datetime.now(timezone.utc) + timedelta(minutes=15)
+    db.commit()
+    
+    # Construct the reset link with the token
+    reset_link = f"http://localhost:8080/pages/research-center-reset-password/index.html?token={research_center.reset_token}"
+    
+    # Construct the email content
+    message = MessageSchema(
+        subject="Password Reset Request",
+        recipients=[email.email],  # List of recipients
+        body=f"Please click the link to reset your password: {reset_link}",
+        subtype="html"
+    )
+
+    fm = FastMail(conf)
+    
+    try:
+        # Send the email asynchronously
+        background_tasks.add_task(fm.send_message, message)
+        return {"message": "Password reset email sent!"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Failed to send email") from e
+
+
+# Reset password endpoint (changed to PUT)
+@app.put("/research-center/reset-password/")
+def reset_research_center_password(reset_data: ResearchCenterResetPassword, db: Session = Depends(get_db)):
+    # Decode the token to get the email
+    try:
+        payload = jwt.decode(reset_data.token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get("sub")
+        if email is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    
+    research_center = db.query(ResearchCenterModel).filter(ResearchCenterModel.email == email).first()
+    if not research_center:
+        raise HTTPException(status_code=404, detail="Research center not found")
+    
+    # Convert `reset_token_expiration` to offset-aware before comparing
+    if research_center.reset_token != reset_data.token or research_center.reset_token_expiration.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+
+    # Update the password
+    research_center.password = get_password_hash(reset_data.new_password)
+    research_center.reset_token = None  # Clear the reset token
+    research_center.reset_token_expiration = None  # Clear the expiration time
+    db.commit()
+
+    return {"msg": "Password has been reset successfully"}
+
+# Create the database tables
+# Base.metadata.drop_all(bind=engine) #if need to drop only
+Base.metadata.create_all(bind=engine)

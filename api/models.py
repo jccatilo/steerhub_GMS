@@ -3,7 +3,7 @@ from database import Base
 import random
 import string
 from sqlalchemy.sql import func
-
+from datetime import datetime, timezone
 class User(Base):
     __tablename__ = "users"
 
@@ -41,6 +41,8 @@ class ResearchCenterModel(Base):
     email = Column(String(255), unique=True, index=True)
     password = Column(String(255))
     max_guest_capacity = Column(Integer)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())  # Timestamp column
-
-
+    reset_token = Column(String(255), nullable=True)  # Specify length for VARCHAR
+    reset_token_expiration = Column(DateTime, nullable=True)
+    
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))

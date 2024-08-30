@@ -1,8 +1,7 @@
-// Import all of Bootstrap's CSS
 @import "~bootstrap/scss/bootstrap";
 
 body {
-    background: url('../../assets/img/bg3.jpg') no-repeat center center fixed;
+    background: url('/assets/img/bg3.jpg') no-repeat center center fixed;
     background-size: cover;
     font-family: Arial, sans-serif;
   }
@@ -22,6 +21,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 10rem;
   }
   
   .logo {
@@ -80,11 +80,10 @@ body {
   
     .logo-container {
       margin-bottom: 1rem;
-      padding-top: 200px;
     }
 
     .logo {
-        width: 25px; /* Adjust the width for smaller logo on mobile */
+        width: 150px; /* Adjust the width for smaller logo on mobile */
         height: auto;
       }
   

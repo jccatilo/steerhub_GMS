@@ -1,3 +1,5 @@
+import './styles.scss';
+import * as bootstrap from 'bootstrap';
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById('resetPasswordForm');
     const message = document.getElementById('message');

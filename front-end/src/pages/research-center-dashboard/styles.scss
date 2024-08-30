@@ -1,2 +1,56 @@
 // Import all of Bootstrap's CSS
 @import "~bootstrap/scss/bootstrap";
+
+body {
+    background-color: #f8f9fa; /* Light gray background for a modern look */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+    font-weight: 300;
+    color: #333;
+}
+
+.navbar {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+}
+
+.navbar-nav .nav-link {
+    color: #007bff;
+    font-size: 1.1rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: color 0.2s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: #0056b3;
+    text-decoration: none;
+}
+
+.navbar-nav .nav-link:focus {
+    box-shadow: none;
+}
+
+.table {
+    background-color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table th {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+}
+
+.table td {
+    border: none;
+}
+
+.table tbody tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}

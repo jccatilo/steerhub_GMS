@@ -104,3 +104,16 @@ class ResetPasswordRequest(BaseModel):
 
 class PasswordResetRequest(BaseModel):
     email: EmailStr
+
+
+# Schema for requesting a password reset link (email)
+class ResearchCenterPasswordResetRequest(BaseModel):
+    email: EmailStr
+
+# Schema for actually resetting the password
+class ResearchCenterResetPassword(BaseModel):
+    token: str
+    new_password: str    
+
+class EmailSchema(BaseModel):
+    email: EmailStr
