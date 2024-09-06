@@ -427,7 +427,8 @@ async def send_follow_up_email(request_data: FollowUpEmailRequest, background_ta
              f"- Visit Date: {visit_request.visit_date}\n"
              f"- Purpose: {visit_request.purpose}\n"
              f"- Status: {visit_request.status}\n\n"
-             f"Please provide an update or confirm the status of this request.\n\n"
+             f"Please provide an update or confirm the status of this request.\n"
+             f"Kindly login to our portal at http://atlas.batstate-u.edu.ph/steerhub_guest_management/pages/research-center-login/ to review the request.\n\n"
              f"Best regards,\n"
              f"STEERHub GMS Team",
         subtype="plain"
