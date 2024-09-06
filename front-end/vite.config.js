@@ -32,5 +32,6 @@ export default {
       },
     },
   },
+  base:'',
   publicDir: resolve(__dirname, 'public'),  // Set the public directory
 };
