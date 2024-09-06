@@ -32,6 +32,6 @@ export default {
       },
     },
   },
-  base:'',
+  base:'/steerhub_guest_management/',
   publicDir: resolve(__dirname, 'public'),  // Set the public directory
 };

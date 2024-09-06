@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (response.ok) {
                 message.textContent = "Password successfully changed!";
                 setTimeout(() => {
-                    window.location.href = 'http://localhost:8080/'; // Redirect to the login page
+                    window.location.href = 'http://atlas.batstate-u.edu.ph/steerhub_guest_management/'; // Redirect to the login page
                 }, 3000); // Redirect after 3 seconds
             } else {
                 const errorData = await response.json();

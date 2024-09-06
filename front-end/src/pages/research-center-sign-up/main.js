@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Redirect to login after a short delay
                 setTimeout(() => {
-                    window.location.href = '../../research-center-login/index.html';
+                    window.location.href = '/steerhub_guest_management/pages/research-center-login/index.html';
                 }, 2000);
             } else {
                 const errorData = await response.json();

@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Login successful");
 
         // Redirect to the user dashboard
-        window.location.href = '/pages/user/index.html'; // Example redirect
+        window.location.href = '/steerhub_guest_management/pages/user/index.html'; // Example redirect
       } else {
         // Show error message
         alert('Login failed');

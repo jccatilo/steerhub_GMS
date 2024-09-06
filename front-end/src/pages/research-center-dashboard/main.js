@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Logout button listener
     document.getElementById('logout-btn').addEventListener('click', () => {
         localStorage.clear(); // Clear all localStorage
-        window.location.href = 'login.html'; // Redirect to login page (or any other page)
+        window.location.href = '/steerhub_guest_management/pages/research-center-login/'; // Redirect to login page (or any other page)
     });
 
     // Save action button listener

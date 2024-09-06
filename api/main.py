@@ -307,9 +307,9 @@ async def research_center_signup(background_tasks: BackgroundTasks, signup_data:
 
     # Prepare email notification
     message = MessageSchema(
-        subject="Welcome to the Research Center",
+        subject="Welcome to the STEERHub Guest Management System!",
         recipients=[signup_data.email],  # List of recipients
-        body=f"Hi Team!, \n\nYou've successfully signed up with email {signup_data.email} in the STEERHub Guest Management System!\nYou will receive guest/visitor requests via your registered email and will be able to do appropriate action with regards to the requests.\n\nBest regards,\nSTEERHub GMS Team.",
+        body=f"Hi Team!, \n\nYou've successfully signed up with email {signup_data.email} in the STEERHub Guest Management System!\nYou will receive guest/visitor requests via your registered email and will be able to do appropriate action with regards to the requests.\n\nLogin to you're account at http://atlas.batstate-u.edu.ph/steerhub_guest_management/pages/research-center-login/ \n\nBest regards,\nSTEERHub GMS Team.",
         # body=f"Hello {user.username},\n\nThank you for registering at STEERHub Guest Management System!\n\nBest regards,\nSTEERHub GMS Team",
         subtype="plain"
     )
@@ -441,8 +441,6 @@ async def send_follow_up_email(request_data: FollowUpEmailRequest, background_ta
 
 
 @app.post("/request-password-reset/")
-
-@app.post("/request-password-reset/")
 async def request_password_reset(request_data: PasswordResetRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     email = request_data.email
     print(f"looking up {email}")
@@ -533,7 +531,7 @@ async def request_password_reset(background_tasks: BackgroundTasks, email: Email
     db.commit()
     
     # Construct the reset link with the token
-    reset_link = f"{URL_FRONT_END_APP}/{PORT_FRONT_END_APP}/pages/research-center-reset-password/index.html?token={research_center.reset_token}"
+    reset_link = f"{URL_FRONT_END_APP}/{PORT_FRONT_END_APP}pages/research-center-reset-password/index.html?token={research_center.reset_token}"
     
     # Construct the email content
     message = MessageSchema(
