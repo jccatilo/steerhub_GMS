@@ -458,7 +458,7 @@ async def request_password_reset(request_data: PasswordResetRequest, background_
     token = serializer.dumps(email, salt="password-reset-salt")
 
     # Construct the password reset link
-    reset_link = f"{URL_FRONT_END_APP}:{PORT_FRONT_END_APP}/pages/reset-password/index.html?token={token}"
+    reset_link = f"{URL_FRONT_END_APP}/{PORT_FRONT_END_APP}/pages/reset-password/index.html?token={token}"
 
     # Prepare the email message
     message = MessageSchema(
@@ -533,7 +533,7 @@ async def request_password_reset(background_tasks: BackgroundTasks, email: Email
     db.commit()
     
     # Construct the reset link with the token
-    reset_link = f"{URL_FRONT_END_APP}:{PORT_FRONT_END_APP}/pages/research-center-reset-password/index.html?token={research_center.reset_token}"
+    reset_link = f"{URL_FRONT_END_APP}/{PORT_FRONT_END_APP}/pages/research-center-reset-password/index.html?token={research_center.reset_token}"
     
     # Construct the email content
     message = MessageSchema(
