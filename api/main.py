@@ -272,7 +272,7 @@ def request_visit(background_tasks: BackgroundTasks,visit: VisitRequest, db: Ses
              f"Visit Date: {new_request.visit_date}\n"
              f"Duration: {new_request.duration} hrs\n"
              f"Purpose: {new_request.purpose}\n\n"
-             f"Kindly login to our portal at http://atlas.batstate-u.edu.ph:8081/pages/research-center-login/ to review the request."
+             f"Kindly login to our portal at http://atlas.batstate-u.edu.ph/steerhub_guest_management/pages/research-center-login/ to review the request."
              f"\n\nBest regards,\nSTEERHub GMS Team",
         subtype="plain"
     )
