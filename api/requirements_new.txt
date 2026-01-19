@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]          # to run the app (optional if you start differently)
+fastapi-mail
+itsdangerous
+python-jose
+passlib[bcrypt]
+python-dotenv
+SQLAlchemy==1.4.*
+PyMySQL
+pydantic==2.8.2
+email-validator            # used via EmailStr

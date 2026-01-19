@@ -32,8 +32,11 @@ export const CONFIG  = {
 
 
 ## Installing and running back-end
-1. go to */api* directory and do **pip instsall -r requirements.txt**
-2. **uvicorn main:app --host 0.0.0.0 --port 81**
+1.  go to */api* directory
+2. python -m venv env
+3. .\env\Scripts\activate
+4. and do **pip instsall -r requirements.txt**
+5. **uvicorn main:app --host 0.0.0.0 --port 81**
 
 ## Running the front end
 1. **npm install**
